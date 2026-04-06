@@ -1,0 +1,12 @@
+name: omni-support-env
+version: "1.0.0"
+description: >
+  Multi-step customer operations simulator. An AI agent handles
+  enterprise support tickets using tools, policies, and multi-turn reasoning.
+tags:
+  - openenv
+  - customer-support
+  - multi-step
+  - tool-use
+sdk: docker
+app_port: 7860

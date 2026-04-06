@@ -1,0 +1,25 @@
+# Virtual environment — never commit this
+venv/
+env/
+.venv/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Environment variables — never commit secrets
+.env
+
+# Testing cache
+.pytest_cache/
+.coverage
+
+# VS Code
+.vscode/
+
+# Distribution
+dist/
+build/
+*.egg-info/
