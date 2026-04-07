@@ -1,3 +1,12 @@
+---
+title: OmniSupportEnv
+emoji: 🤖
+colorFrom: blue
+colorTo: green
+sdk: docker
+app_port: 7860
+---
+
 # OmniSupportEnv
 
 Multi-step customer operations simulator for RL agent training and evaluation.
