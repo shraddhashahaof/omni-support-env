@@ -5,23 +5,27 @@ import os
 import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "server"))
 
-from typing import List
+from typing import List, Optional
 from dotenv import load_dotenv
 from openai import OpenAI
 
 load_dotenv()
 
-API_KEY      = os.getenv("HF_TOKEN") or os.getenv("API_KEY", "")
-API_BASE_URL = os.getenv("API_BASE_URL", "https://router.huggingface.co/v1")
-MODEL_NAME   = os.getenv("MODEL_NAME", "Qwen/Qwen2.5-72B-Instruct")
-IMAGE_NAME   = os.getenv("LOCAL_IMAGE_NAME", "omni-support-env:latest")
-BENCHMARK    = "omni_support_env"
-MAX_STEPS    = 12
-TEMPERATURE  = 0.3
-MAX_TOKENS   = 400
+# ── Environment variables — mandatory format from submission guidelines ──────
+API_BASE_URL     = os.getenv("API_BASE_URL", "https://router.huggingface.co/v1")
+MODEL_NAME       = os.getenv("MODEL_NAME", "Qwen/Qwen2.5-72B-Instruct")
+HF_TOKEN         = os.getenv("HF_TOKEN")         
+LOCAL_IMAGE_NAME = os.getenv("LOCAL_IMAGE_NAME")   
+
+if HF_TOKEN is None:
+    raise ValueError("HF_TOKEN environment variable is required")
+
+BENCHMARK         = "omni_support_env"
+MAX_STEPS         = 12
+TEMPERATURE       = 0.3
+MAX_TOKENS        = 400
 SUCCESS_THRESHOLD = 0.5
 
-# One task per difficulty level
 TASK_IDS = ["easy_refund_001", "med_chargeback_001", "hard_fraud_001"]
 
 SYSTEM_PROMPT = """You are a customer support agent. You have access to tools.
@@ -44,34 +48,35 @@ ACTION TYPES:
 RULES:
 1. Always check_account before processing any refund
 2. If fraud suspected: flag_security BEFORE any refund
-3. If chargeback mentioned: escalate first, never refund immediately
+3. If chargeback mentioned: escalate first, do not refund immediately
 4. Gather information before resolving"""
 
 
-# ── Mandatory log format — do not change these ──────────────────
+# ── Mandatory stdout format — do not change field names or order ─────────────
 
-def log_start(task: str, model: str):
+def log_start(task: str, model: str) -> None:
     print(f"[START] task={task} env={BENCHMARK} model={model}", flush=True)
 
-def log_step(step: int, action: str, reward: float, done: bool, error=None):
+def log_step(step: int, action: str, reward: float, done: bool, error: Optional[str]) -> None:
+    error_val = error if error else "null"
     print(
-        f"[STEP] step={step} action={action!r} "
-        f"reward={reward:.2f} done={str(done).lower()} error={error or 'null'}",
+        f"[STEP] step={step} action={action} reward={reward:.2f} "
+        f"done={str(done).lower()} error={error_val}",
         flush=True,
     )
 
-def log_end(success: bool, steps: int, score: float, rewards: List[float]):
+def log_end(success: bool, steps: int, score: float, rewards: List[float]) -> None:
+    rewards_str = ",".join(f"{r:.2f}" for r in rewards)
     print(
         f"[END] success={str(success).lower()} steps={steps} "
-        f"score={score:.4f} rewards={','.join(f'{r:.2f}' for r in rewards)}",
+        f"score={score:.2f} rewards={rewards_str}",
         flush=True,
     )
 
 
-# ── LLM agent ───────────────────────────────────────────────────
+# ── LLM agent ────────────────────────────────────────────────────────────────
 
 def parse_action(text: str):
-    """Parse LLM JSON response into (action_type, action_value)."""
     try:
         clean = text.strip()
         if "```" in clean:
@@ -110,7 +115,7 @@ def format_obs(obs) -> str:
         f"TICKET #{obs.ticket_id} | User: {obs.user_id} | "
         f"Tier: {obs.account_tier} | Account age: {obs.account_age_days} days\n\n"
         f"ISSUE: {obs.ticket_text}\n\n"
-        f"Step {obs.step_number}/12 | Remaining: {obs.steps_remaining} | "
+        f"Step {obs.step_number}/{MAX_STEPS} | Remaining: {obs.steps_remaining} | "
         f"Reward so far: {obs.cumulative_reward:.2f}\n"
         f"Feedback: {obs.last_feedback}"
         f"{last_tool}{violations}\n\n"
@@ -118,15 +123,15 @@ def format_obs(obs) -> str:
     )
 
 
-# ── Episode runner ───────────────────────────────────────────────
+# ── Episode runner ────────────────────────────────────────────────────────────
 
 async def run_task(env, client: OpenAI, task_id: str) -> float:
     from models import SupportAction, ActionType
 
     rewards: List[float] = []
     steps_taken = 0
-    score = 0.0
-    success = False
+    score       = 0.0
+    success     = False
 
     log_start(task=task_id, model=MODEL_NAME)
 
@@ -152,7 +157,7 @@ async def run_task(env, client: OpenAI, task_id: str) -> float:
             rewards.append(reward)
             steps_taken = step
 
-            log_step(step=step, action=action_str, reward=reward, done=done)
+            log_step(step=step, action=action_str, reward=reward, done=done, error=None)
 
             if done:
                 break
@@ -169,19 +174,21 @@ async def run_task(env, client: OpenAI, task_id: str) -> float:
     return score
 
 
-# ── Main ─────────────────────────────────────────────────────────
+# ── Main ──────────────────────────────────────────────────────────────────────
 
 async def main():
     from client import OmniSupportEnvClient as OmniSupportEnv
 
-    client = OpenAI(base_url=API_BASE_URL, api_key=API_KEY)
-    all_scores = []
+    # Initialize OpenAI client pointing at HuggingFace router
+    client = OpenAI(base_url=API_BASE_URL, api_key=HF_TOKEN)
+
+    all_scores: List[float] = []
 
     print(f"[INFO] Model:  {MODEL_NAME}", flush=True)
     print(f"[INFO] Tasks:  {TASK_IDS}", flush=True)
     print("", flush=True)
 
-    env = await OmniSupportEnv.from_docker_image(IMAGE_NAME)
+    env = await OmniSupportEnv.from_docker_image(LOCAL_IMAGE_NAME)
     try:
         for task_id in TASK_IDS:
             score = await run_task(env, client, task_id)
