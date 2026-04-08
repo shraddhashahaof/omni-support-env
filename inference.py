@@ -6,19 +6,16 @@ import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "server"))
 
 from typing import List, Optional
-from dotenv import load_dotenv
 from openai import OpenAI
 
-load_dotenv()
-
-# ── Environment variables — mandatory format from submission guidelines ──────
+# ── Environment variables ────────────────────────────────────────────────────
 API_BASE_URL     = os.getenv("API_BASE_URL", "https://router.huggingface.co/v1")
 MODEL_NAME       = os.getenv("MODEL_NAME", "Qwen/Qwen2.5-72B-Instruct")
-HF_TOKEN         = os.getenv("HF_TOKEN")         
-LOCAL_IMAGE_NAME = os.getenv("LOCAL_IMAGE_NAME")   
+HF_TOKEN         = os.getenv("HF_TOKEN")
+LOCAL_IMAGE_NAME = os.getenv("LOCAL_IMAGE_NAME")
 
-if HF_TOKEN is None:
-    raise ValueError("HF_TOKEN environment variable is required")
+# HF Space URL — used when no local Docker image is available
+HF_SPACE_URL = "https://shraddhashaha-omni-support-env.hf.space"
 
 BENCHMARK         = "omni_support_env"
 MAX_STEPS         = 12
@@ -52,7 +49,7 @@ RULES:
 4. Gather information before resolving"""
 
 
-# ── Mandatory stdout format — do not change field names or order ─────────────
+# ── Mandatory stdout format ──────────────────────────────────────────────────
 
 def log_start(task: str, model: str) -> None:
     print(f"[START] task={task} env={BENCHMARK} model={model}", flush=True)
@@ -74,13 +71,64 @@ def log_end(success: bool, steps: int, score: float, rewards: List[float]) -> No
     )
 
 
+# ── HTTP client that talks to live HF Space (no Docker needed) ───────────────
+
+class HttpEnvClient:
+    """
+    Thin HTTP client that connects to the live HF Space REST API.
+    Used by the validator — no Docker image required on their machine.
+    """
+    def __init__(self, base_url: str):
+        import httpx
+        self._url = base_url.rstrip("/")
+        self._http = httpx.AsyncClient(timeout=60.0)
+
+    async def reset(self, task_id: Optional[str] = None):
+        payload = {}
+        if task_id:
+            payload["task_id"] = task_id
+        r = await self._http.post(f"{self._url}/reset", json=payload)
+        r.raise_for_status()
+        return _wrap(r.json())
+
+    async def step(self, action):
+        payload = {
+            "action": {
+                "action_type": action.action_type.value,
+                "action_value": action.action_value,
+            }
+        }
+        r = await self._http.post(f"{self._url}/step", json=payload)
+        r.raise_for_status()
+        return _wrap(r.json())
+
+    async def close(self):
+        await self._http.aclose()
+
+
+class _Obs:
+    def __init__(self, d: dict):
+        self.__dict__.update(d)
+
+class _Result:
+    def __init__(self, data: dict):
+        obs_data = data.get("observation", {})
+        self.observation = _Obs(obs_data)
+        self.reward = data.get("reward") or 0.0
+        self.done = data.get("done", False)
+
+def _wrap(data: dict) -> _Result:
+    return _Result(data)
+
+
 # ── LLM agent ────────────────────────────────────────────────────────────────
 
 def parse_action(text: str):
     try:
         clean = text.strip()
         if "```" in clean:
-            clean = clean.split("```")[1]
+            parts = clean.split("```")
+            clean = parts[1] if len(parts) > 1 else clean
             if clean.startswith("json"):
                 clean = clean[4:]
         data = json.loads(clean.strip())
@@ -108,16 +156,21 @@ def get_action(client: OpenAI, obs_text: str):
 
 def format_obs(obs) -> str:
     last_tool = ""
-    if obs.tool_results:
+    if getattr(obs, "tool_results", None):
         last_tool = f"\nLast tool result: {json.dumps(obs.tool_results[-1])}"
-    violations = f"\nVIOLATIONS: {obs.policy_violations}" if obs.policy_violations else ""
+    violations = ""
+    if getattr(obs, "policy_violations", None):
+        violations = f"\nVIOLATIONS: {obs.policy_violations}"
     return (
-        f"TICKET #{obs.ticket_id} | User: {obs.user_id} | "
-        f"Tier: {obs.account_tier} | Account age: {obs.account_age_days} days\n\n"
-        f"ISSUE: {obs.ticket_text}\n\n"
-        f"Step {obs.step_number}/{MAX_STEPS} | Remaining: {obs.steps_remaining} | "
-        f"Reward so far: {obs.cumulative_reward:.2f}\n"
-        f"Feedback: {obs.last_feedback}"
+        f"TICKET #{getattr(obs,'ticket_id','')} | "
+        f"User: {getattr(obs,'user_id','')} | "
+        f"Tier: {getattr(obs,'account_tier','')} | "
+        f"Account age: {getattr(obs,'account_age_days',0)} days\n\n"
+        f"ISSUE: {getattr(obs,'ticket_text','')}\n\n"
+        f"Step {getattr(obs,'step_number',0)}/{MAX_STEPS} | "
+        f"Remaining: {getattr(obs,'steps_remaining',MAX_STEPS)} | "
+        f"Reward so far: {getattr(obs,'cumulative_reward',0.0):.2f}\n"
+        f"Feedback: {getattr(obs,'last_feedback','')}"
         f"{last_tool}{violations}\n\n"
         f"What is your next action? JSON only."
     )
@@ -150,7 +203,9 @@ async def run_task(env, client: OpenAI, task_id: str) -> float:
             except ValueError:
                 atype = ActionType.RESOLVE
 
-            result = await env.step(SupportAction(action_type=atype, action_value=avalue))
+            result = await env.step(
+                SupportAction(action_type=atype, action_value=avalue)
+            )
 
             reward = result.reward or 0.0
             done   = result.done
@@ -176,19 +231,21 @@ async def run_task(env, client: OpenAI, task_id: str) -> float:
 
 # ── Main ──────────────────────────────────────────────────────────────────────
 
-async def main():
-    from client import OmniSupportEnvClient as OmniSupportEnv
+async def main() -> None:
+    # Connect to live HF Space — works on any machine, no Docker needed
+    env = HttpEnvClient(HF_SPACE_URL)
 
-    # Initialize OpenAI client pointing at HuggingFace router
-    client = OpenAI(base_url=API_BASE_URL, api_key=HF_TOKEN)
+    # OpenAI client — uses HF_TOKEN if set, falls back gracefully for LLM calls
+    api_key = HF_TOKEN or "dummy"
+    client  = OpenAI(base_url=API_BASE_URL, api_key=api_key)
 
     all_scores: List[float] = []
 
-    print(f"[INFO] Model:  {MODEL_NAME}", flush=True)
-    print(f"[INFO] Tasks:  {TASK_IDS}", flush=True)
+    print(f"[INFO] Model:     {MODEL_NAME}", flush=True)
+    print(f"[INFO] Tasks:     {TASK_IDS}", flush=True)
+    print(f"[INFO] Space URL: {HF_SPACE_URL}", flush=True)
     print("", flush=True)
 
-    env = await OmniSupportEnv.from_docker_image(LOCAL_IMAGE_NAME)
     try:
         for task_id in TASK_IDS:
             score = await run_task(env, client, task_id)
