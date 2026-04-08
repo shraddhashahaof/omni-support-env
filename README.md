@@ -440,7 +440,7 @@ This environment fully implements the OpenEnv specification:
 ## Project Info
 
 **Hackathon:** Meta PyTorch × Scaler OpenEnv Round 1  
-**Team:** Solo — Shraddha Shaha  
+**Team:** Solo — Shraddha Shaha [AgentOne] 
 **Domain:** Customer Operations / Enterprise Support  
 **Framework:** OpenEnv v0.2.3  
 **Model tested:** Qwen/Qwen2.5-72B-Instruct  
