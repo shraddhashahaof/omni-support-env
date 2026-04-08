@@ -12,9 +12,7 @@ from openai import OpenAI
 API_BASE_URL     = os.getenv("API_BASE_URL", "https://router.huggingface.co/v1")
 MODEL_NAME       = os.getenv("MODEL_NAME", "Qwen/Qwen2.5-72B-Instruct")
 HF_TOKEN         = os.getenv("HF_TOKEN")
-LOCAL_IMAGE_NAME = os.getenv("LOCAL_IMAGE_NAME")
 
-# HF Space URL — used when no local Docker image is available
 HF_SPACE_URL = "https://shraddhashaha-omni-support-env.hf.space"
 
 BENCHMARK         = "omni_support_env"
@@ -27,29 +25,12 @@ TASK_IDS = ["easy_refund_001", "med_chargeback_001", "hard_fraud_001"]
 
 SYSTEM_PROMPT = """You are a customer support agent. You have access to tools.
 
-Respond ONLY with valid JSON — no explanation outside the JSON:
+Respond ONLY with valid JSON:
 {"action_type": "<type>", "action_value": "<value>"}
-
-ACTION TYPES:
-- search_kb: <query>
-- lookup_order: <order_id>
-- check_account: <user_id>
-- process_refund: <order_id,amount,reason>
-- flag_security: <user_id,reason>
-- ask_user: <question>
-- send_response: <message>
-- escalate: <reason>
-- resolve: <summary>
-- close_no_action: <reason>
-
-RULES:
-1. Always check_account before processing any refund
-2. If fraud suspected: flag_security BEFORE any refund
-3. If chargeback mentioned: escalate first, do not refund immediately
-4. Gather information before resolving"""
+"""
 
 
-# ── Mandatory stdout format ──────────────────────────────────────────────────
+# ── Logging ──────────────────────────────────────────────────────────────────
 
 def log_start(task: str, model: str) -> None:
     print(f"[START] task={task} env={BENCHMARK} model={model}", flush=True)
@@ -71,39 +52,47 @@ def log_end(success: bool, steps: int, score: float, rewards: List[float]) -> No
     )
 
 
-# ── HTTP client that talks to live HF Space (no Docker needed) ───────────────
+# ── Safe HTTP client ─────────────────────────────────────────────────────────
 
 class HttpEnvClient:
-    """
-    Thin HTTP client that connects to the live HF Space REST API.
-    Used by the validator — no Docker image required on their machine.
-    """
     def __init__(self, base_url: str):
         import httpx
         self._url = base_url.rstrip("/")
-        self._http = httpx.AsyncClient(timeout=60.0)
+        self._http = httpx.AsyncClient(timeout=30.0)
 
     async def reset(self, task_id: Optional[str] = None):
-        payload = {}
-        if task_id:
-            payload["task_id"] = task_id
-        r = await self._http.post(f"{self._url}/reset", json=payload)
-        r.raise_for_status()
-        return _wrap(r.json())
+        try:
+            payload = {"task_id": task_id} if task_id else {}
+            r = await self._http.post(f"{self._url}/reset", json=payload)
+            r.raise_for_status()
+            return _wrap(r.json())
+        except Exception as e:
+            print(f"[DEBUG] reset error: {e}", flush=True)
+            return _safe_result()
 
     async def step(self, action):
-        payload = {
-            "action": {
-                "action_type": action.action_type.value,
-                "action_value": action.action_value,
+        try:
+            payload = {
+                "action": {
+                    "action_type": action.action_type.value,
+                    "action_value": action.action_value,
+                }
             }
-        }
-        r = await self._http.post(f"{self._url}/step", json=payload)
-        r.raise_for_status()
-        return _wrap(r.json())
+            r = await self._http.post(f"{self._url}/step", json=payload)
+            r.raise_for_status()
+            return _wrap(r.json())
+        except asyncio.CancelledError:
+            print("[DEBUG] step cancelled", flush=True)
+            return _safe_result(done=True)
+        except Exception as e:
+            print(f"[DEBUG] step error: {e}", flush=True)
+            return _safe_result(done=True)
 
     async def close(self):
-        await self._http.aclose()
+        try:
+            await self._http.aclose()
+        except Exception as e:
+            print(f"[DEBUG] close error: {e}", flush=True)
 
 
 class _Obs:
@@ -112,38 +101,38 @@ class _Obs:
 
 class _Result:
     def __init__(self, data: dict):
-        obs_data = data.get("observation", {})
-        self.observation = _Obs(obs_data)
-        self.reward = data.get("reward") or 0.0
+        self.observation = _Obs(data.get("observation", {}))
+        self.reward = data.get("reward", 0.0)
         self.done = data.get("done", False)
 
 def _wrap(data: dict) -> _Result:
     return _Result(data)
 
+def _safe_result(done=False):
+    return _Result({
+        "observation": {},
+        "reward": 0.0,
+        "done": done
+    })
 
-# ── LLM agent ────────────────────────────────────────────────────────────────
+
+# ── LLM ──────────────────────────────────────────────────────────────────────
 
 def parse_action(text: str):
     try:
-        clean = text.strip()
-        if "```" in clean:
-            parts = clean.split("```")
-            clean = parts[1] if len(parts) > 1 else clean
-            if clean.startswith("json"):
-                clean = clean[4:]
-        data = json.loads(clean.strip())
+        data = json.loads(text.strip())
         return data.get("action_type", "resolve"), str(data.get("action_value", "done"))
     except Exception:
-        return "resolve", "could not parse response"
+        return "resolve", "error"
 
 
-def get_action(client: OpenAI, obs_text: str):
+def get_action(client: OpenAI, prompt: str):
     try:
         resp = client.chat.completions.create(
             model=MODEL_NAME,
             messages=[
                 {"role": "system", "content": SYSTEM_PROMPT},
-                {"role": "user",   "content": obs_text},
+                {"role": "user", "content": prompt},
             ],
             temperature=TEMPERATURE,
             max_tokens=MAX_TOKENS,
@@ -151,40 +140,22 @@ def get_action(client: OpenAI, obs_text: str):
         return parse_action(resp.choices[0].message.content or "")
     except Exception as e:
         print(f"[DEBUG] LLM error: {e}", flush=True)
-        return "resolve", "error"
+        return "resolve", "fallback"
 
 
 def format_obs(obs) -> str:
-    last_tool = ""
-    if getattr(obs, "tool_results", None):
-        last_tool = f"\nLast tool result: {json.dumps(obs.tool_results[-1])}"
-    violations = ""
-    if getattr(obs, "policy_violations", None):
-        violations = f"\nVIOLATIONS: {obs.policy_violations}"
-    return (
-        f"TICKET #{getattr(obs,'ticket_id','')} | "
-        f"User: {getattr(obs,'user_id','')} | "
-        f"Tier: {getattr(obs,'account_tier','')} | "
-        f"Account age: {getattr(obs,'account_age_days',0)} days\n\n"
-        f"ISSUE: {getattr(obs,'ticket_text','')}\n\n"
-        f"Step {getattr(obs,'step_number',0)}/{MAX_STEPS} | "
-        f"Remaining: {getattr(obs,'steps_remaining',MAX_STEPS)} | "
-        f"Reward so far: {getattr(obs,'cumulative_reward',0.0):.2f}\n"
-        f"Feedback: {getattr(obs,'last_feedback','')}"
-        f"{last_tool}{violations}\n\n"
-        f"What is your next action? JSON only."
-    )
+    return f"{getattr(obs,'ticket_text','')} | step info"
 
 
-# ── Episode runner ────────────────────────────────────────────────────────────
+# ── Runner ───────────────────────────────────────────────────────────────────
 
 async def run_task(env, client: OpenAI, task_id: str) -> float:
     from models import SupportAction, ActionType
 
     rewards: List[float] = []
     steps_taken = 0
-    score       = 0.0
-    success     = False
+    score = 0.0
+    success = False
 
     log_start(task=task_id, model=MODEL_NAME)
 
@@ -200,7 +171,7 @@ async def run_task(env, client: OpenAI, task_id: str) -> float:
 
             try:
                 atype = ActionType(atype_str)
-            except ValueError:
+            except:
                 atype = ActionType.RESOLVE
 
             result = await env.step(
@@ -208,55 +179,54 @@ async def run_task(env, client: OpenAI, task_id: str) -> float:
             )
 
             reward = result.reward or 0.0
-            done   = result.done
+            done = result.done
+
             rewards.append(reward)
             steps_taken = step
 
-            log_step(step=step, action=action_str, reward=reward, done=done, error=None)
+            log_step(step, action_str, reward, done, None)
 
             if done:
                 break
 
-        score   = max(0.0, min(1.0, sum(rewards)))
+        score = max(0.0, min(1.0, sum(rewards)))
         success = score >= SUCCESS_THRESHOLD
 
     except Exception as e:
-        print(f"[DEBUG] Task error: {e}", flush=True)
+        print(f"[DEBUG] run_task error: {e}", flush=True)
 
     finally:
-        log_end(success=success, steps=steps_taken, score=score, rewards=rewards)
+        log_end(success, steps_taken, score, rewards)
 
     return score
 
 
-# ── Main ──────────────────────────────────────────────────────────────────────
+# ── Main ─────────────────────────────────────────────────────────────────────
 
-async def main() -> None:
-    # Connect to live HF Space — works on any machine, no Docker needed
+async def main():
     env = HttpEnvClient(HF_SPACE_URL)
 
-    # OpenAI client — uses HF_TOKEN if set, falls back gracefully for LLM calls
-    api_key = HF_TOKEN or "dummy"
-    client  = OpenAI(base_url=API_BASE_URL, api_key=api_key)
+    client = OpenAI(
+        base_url=API_BASE_URL,
+        api_key=HF_TOKEN or "dummy"
+    )
 
-    all_scores: List[float] = []
-
-    print(f"[INFO] Model:     {MODEL_NAME}", flush=True)
-    print(f"[INFO] Tasks:     {TASK_IDS}", flush=True)
-    print(f"[INFO] Space URL: {HF_SPACE_URL}", flush=True)
-    print("", flush=True)
+    scores = []
 
     try:
         for task_id in TASK_IDS:
             score = await run_task(env, client, task_id)
-            all_scores.append(score)
+            scores.append(score)
             print("", flush=True)
     finally:
         await env.close()
 
-    avg = sum(all_scores) / len(all_scores) if all_scores else 0.0
+    avg = sum(scores) / len(scores) if scores else 0.0
     print(f"[SUMMARY] tasks={len(TASK_IDS)} avg_score={avg:.4f}", flush=True)
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        print("[DEBUG] interrupted", flush=True)
