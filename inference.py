@@ -98,7 +98,8 @@ def log_start(task, model, ticket, tier, age):
 def log_step(step, atype, avalue, reward, done, feedback):
     r_col    = green(f"+{reward:.3f}") if reward > 0 else (red(f"{reward:.3f}") if reward < 0 else dim(f"{reward:.3f}"))
     val_disp = avalue[:60] + "..." if len(avalue) > 60 else avalue
-    fb_disp  = feedback[:100] + "..." if len(feedback) > 100 else feedback
+    # fb_disp  = feedback[:100] + "..." if len(feedback) > 100 else feedback
+    fb_disp = feedback
     print(f"  {dim(f'Step {step:>2})')}  {bold(atype):<20}  val={cyan(val_disp)}")
     print(f"           reward={r_col}  done={str(done).lower()}")
     if fb_disp and "New ticket" not in fb_disp:
@@ -129,34 +130,100 @@ def print_banner(mode):
     print(f"  Tasks  : {len(TASK_IDS)} tickets (5 easy . 5 medium . 5 hard)")
     print(f"  Max steps/episode: {MAX_STEPS}"); print()
 
+# def print_summary(scores, task_ids, elapsed_total):
+#     print("\n" + "=" * 66)
+#     print("                       FINAL SUMMARY")
+#     print("=" * 66)
+#     groups = {"easy": [], "med": [], "hard": []}
+#     for tid, sc in zip(task_ids, scores):
+#         groups.setdefault(tid.split("_")[0], []).append(sc)
+#     for label, key in [("Easy   (5)", "easy"), ("Medium (5)", "med"), ("Hard   (5)", "hard")]:
+#         grp = groups.get(key, [])
+#         if not grp: continue
+#         avg    = sum(grp) / len(grp)
+#         passed = sum(1 for s in grp if s >= SUCCESS_THRESHOLD)
+#         bar    = "█" * int(avg * 20) + "░" * (20 - int(avg * 20))
+#         print(f"  {label}:  avg={avg:.4f}  [{bar}]  pass={passed}/{len(grp)}")
+#     overall    = sum(scores) / len(scores) if scores else 0.0
+#     total_pass = sum(1 for s in scores if s >= SUCCESS_THRESHOLD)
+#     print(f"\n  Overall avg  : {bold(f'{overall:.4f}')}")
+#     print(f"  Tasks passed : {total_pass}/{len(scores)}   Time: {elapsed_total:.1f}s\n")
+#     print(dim("  Task                              Score    Status"))
+#     print(dim("  " + "-" * 48))
+#     for tid, sc in zip(task_ids, scores):
+#         status = green("PASS") if sc >= SUCCESS_THRESHOLD else red("FAIL")
+#         colour = {"easy": green, "med": yellow, "hard": red}.get(tid.split("_")[0], cyan)
+#         print(f"  {colour(tid):<36} {sc:.4f}   {status}")
+#     print()
+#     avg_by_diff = {k: (sum(v)/len(v) if v else 0.0) for k, v in groups.items()}
+#     print(f"[SUMMARY] tasks={len(task_ids)} avg_score={overall:.4f} passed={total_pass}/{len(scores)} "
+#           f"easy_avg={avg_by_diff.get('easy',0):.4f} med_avg={avg_by_diff.get('med',0):.4f} hard_avg={avg_by_diff.get('hard',0):.4f}", flush=True)
+
 def print_summary(scores, task_ids, elapsed_total):
     print("\n" + "=" * 66)
     print("                       FINAL SUMMARY")
     print("=" * 66)
+
     groups = {"easy": [], "med": [], "hard": []}
+
     for tid, sc in zip(task_ids, scores):
-        groups.setdefault(tid.split("_")[0], []).append(sc)
-    for label, key in [("Easy   (5)", "easy"), ("Medium (5)", "med"), ("Hard   (5)", "hard")]:
+        key = tid.split("_")[0]
+        groups.setdefault(key, []).append(sc)
+
+    # Per-difficulty breakdown
+    for label, key in [("Easy   (5)", "easy"),
+                       ("Medium (5)", "med"),
+                       ("Hard   (5)", "hard")]:
+
         grp = groups.get(key, [])
-        if not grp: continue
-        avg    = sum(grp) / len(grp)
+        if not grp:
+            continue
+
+        avg = sum(grp) / len(grp)
         passed = sum(1 for s in grp if s >= SUCCESS_THRESHOLD)
-        bar    = "█" * int(avg * 20) + "░" * (20 - int(avg * 20))
+        bar = "█" * int(avg * 20) + "░" * (20 - int(avg * 20))
+
         print(f"  {label}:  avg={avg:.4f}  [{bar}]  pass={passed}/{len(grp)}")
-    overall    = sum(scores) / len(scores) if scores else 0.0
+
+    # Overall stats
+    overall = sum(scores) / len(scores) if scores else 0.0
     total_pass = sum(1 for s in scores if s >= SUCCESS_THRESHOLD)
+
     print(f"\n  Overall avg  : {bold(f'{overall:.4f}')}")
     print(f"  Tasks passed : {total_pass}/{len(scores)}   Time: {elapsed_total:.1f}s\n")
+
     print(dim("  Task                              Score    Status"))
     print(dim("  " + "-" * 48))
+
     for tid, sc in zip(task_ids, scores):
         status = green("PASS") if sc >= SUCCESS_THRESHOLD else red("FAIL")
         colour = {"easy": green, "med": yellow, "hard": red}.get(tid.split("_")[0], cyan)
         print(f"  {colour(tid):<36} {sc:.4f}   {status}")
+
     print()
-    avg_by_diff = {k: (sum(v)/len(v) if v else 0.0) for k, v in groups.items()}
-    print(f"[SUMMARY] tasks={len(task_ids)} avg_score={overall:.4f} passed={total_pass}/{len(scores)} "
-          f"easy_avg={avg_by_diff.get('easy',0):.4f} med_avg={avg_by_diff.get('med',0):.4f} hard_avg={avg_by_diff.get('hard',0):.4f}", flush=True)
+
+    # Compute averages safely
+    avg_by_diff = {
+        k: (sum(v) / len(v) if v else 0.0)
+        for k, v in groups.items()
+    }
+
+    # Build summary dynamically (NO fake values)
+    parts = [
+        f"tasks={len(task_ids)}",
+        f"avg_score={overall:.4f}",
+        f"passed={total_pass}/{len(scores)}"
+    ]
+
+    # Only include if group actually exists
+    if groups.get("easy"):
+        parts.append(f"easy_avg={avg_by_diff['easy']:.4f}")
+    if groups.get("med"):
+        parts.append(f"med_avg={avg_by_diff['med']:.4f}")
+    if groups.get("hard"):
+        parts.append(f"hard_avg={avg_by_diff['hard']:.4f}")
+
+    print(f"[SUMMARY] {' '.join(parts)}", flush=True)
 
 
 # ── LLM helpers ───────────────────────────────────────────────────────────────
@@ -382,10 +449,25 @@ def run_task(env, client, task_id, index, total, use_local):
 # MAIN
 # ═════════════════════════════════════════════════════════════════════════════
 def main():
+    global MODEL_NAME, HF_SPACE_URL
+    import argparse
+    p = argparse.ArgumentParser()
+    p.add_argument("tasks", nargs="*", help="task IDs to run (default: all 15)")
+    p.add_argument("--url",   default=None, help="force HTTP mode with this HF Space URL")
+    p.add_argument("--model", default=None, help="override MODEL_NAME")
+    args = p.parse_args()
+
+    if args.model:
+        MODEL_NAME = args.model
+    if args.url:
+        HF_SPACE_URL = args.url
+
     use_local = USE_LOCAL
 
-    # Auto-fallback: if HF space is unreachable, switch to local automatically
-    if not use_local:
+    # --url forces HTTP mode; otherwise auto-fallback logic runs
+    if args.url:
+        use_local = False
+    elif not use_local:
         try:
             import httpx
             r = httpx.get(f"{HF_SPACE_URL}/health", timeout=8.0)
@@ -408,7 +490,7 @@ def main():
     run_ids = []
     t_start = time.time()
 
-    tasks = sys.argv[1:] if len(sys.argv) > 1 else TASK_IDS
+    tasks = args.tasks if args.tasks else TASK_IDS
 
     try:
         for i, task_id in enumerate(tasks, 1):
