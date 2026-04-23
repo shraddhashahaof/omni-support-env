@@ -1,4 +1,4 @@
-# Virtual environment — never commit this
+# Virtual environments — never commit these
 venv/
 env/
 .venv/
@@ -12,14 +12,32 @@ __pycache__/
 # Environment variables — never commit secrets
 .env
 
-# Testing cache
+# Testing / coverage
 .pytest_cache/
 .coverage
+htmlcov/
 
 # VS Code
 .vscode/
 
-# Distribution
+# Build / distribution
 dist/
 build/
 *.egg-info/
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Local data / outputs
+data/
+omni-grpo-output/
+
+# Git internals (usually unnecessary but harmless to exclude patterns elsewhere)
+*.tmp
