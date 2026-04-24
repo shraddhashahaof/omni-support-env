@@ -97,7 +97,8 @@ def log_start(task, model, ticket, tier, age):
 
 def log_step(step, atype, avalue, reward, done, feedback):
     r_col    = green(f"+{reward:.3f}") if reward > 0 else (red(f"{reward:.3f}") if reward < 0 else dim(f"{reward:.3f}"))
-    val_disp = avalue[:60] + "..." if len(avalue) > 60 else avalue
+    # val_disp = avalue[:60] + "..." if len(avalue) > 60 else avalue
+    val_disp = avalue
     # fb_disp  = feedback[:100] + "..." if len(feedback) > 100 else feedback
     fb_disp = feedback
     print(f"  {dim(f'Step {step:>2})')}  {bold(atype):<20}  val={cyan(val_disp)}")

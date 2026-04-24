@@ -1,448 +1,438 @@
----
-title: OmniSupportEnv
-emoji: 🤖
-colorFrom: blue
-colorTo: green
-sdk: docker
-app_port: 7860
----
+# 🤖 OmniSupportEnv
 
-# OmniSupportEnv
-
-> **A multi-step Reinforcement Learning environment where an AI agent handles real enterprise customer support tickets — using tools, enforcing company policy, and resolving issues across 15 hand-crafted scenarios.**
-
-Built for the **Meta PyTorch × Scaler OpenEnv Hackathon — Round 1** using the [OpenEnv](https://github.com/meta-pytorch/OpenEnv) framework.
-
-**Live Space:** `https://shraddhashaha-omni-support-env.hf.space`
+> A multi-step Reinforcement Learning environment where an AI agent resolves real enterprise customer support tickets — using tools, enforcing company policy, detecting fraud, and handling compliance across 15 hand-crafted scenarios.
 
 ---
 
-## Why This Problem
+## 🏆 Hackathon Submission
 
-Every large company employs thousands of support agents to handle billing disputes, fraud alerts, technical issues, and compliance requests. An AI that can navigate these scenarios reliably — using the right tools, following policy, and reaching correct resolutions — would have immediate real-world value.
-
-This environment trains and evaluates exactly that agent. It is not a game or toy problem. Every task maps directly to a workflow that exists in production customer operations systems today.
+| Field | Value |
+|---|---|
+| **Hackathon** | Meta PyTorch × Scaler OpenEnv Hackathon |
+| **Round** | Round 2 |
+| **Team Name** | AgentOne |
+| **Builder** | Shraddha Shaha |
+| **Theme** | **#3.1 World Modeling → Professional Tasks** |
+| **Framework** | OpenEnv v0.2.3 |
+| **HF Space** | https://huggingface.co/spaces/shraddhashaha/omni-support-env |
+| **Live Demo** | https://shraddhashaha-omni-support-env.hf.space |
+| **GitHub** | https://github.com/shraddhashahaof/omni-support-env |
+| **Baseline Model** | Qwen/Qwen2.5-72B-Instruct |
+| **Training Model** | Qwen/Qwen2.5-1.5B-Instruct (GRPO via TRL) |
 
 ---
 
-## What the Agent Does
+## 🎯 Problem Statement & Motivation
 
-Each episode is one support ticket. The agent receives the ticket text, customer profile, and account context. It then takes a sequence of actions — calling tools, asking questions, enforcing policy — to resolve the ticket within 15 steps.
+Every large company employs thousands of support agents to handle billing disputes, fraud alerts, technical issues, and compliance requests. Getting these decisions wrong — issuing a refund during an active chargeback, missing a fraud signal, or ignoring a GDPR request — creates real legal and financial consequences.
+
+**The gap this fills:** Most RL environments benchmark games, puzzles, or coding tasks. Enterprise decision-making under policy constraints — where the wrong action costs money or creates legal liability — is deeply underexplored in RL research.
+
+**Why this is hard:** The agent must not just *understand* a ticket, but maintain a working mental model of account trust level, refund eligibility, fraud risk score, chargeback status, SLA urgency, and prior tool outputs — all from partial observations, across up to 15 sequential steps per episode.
+
+**Why RL is the right approach:** Rule-based systems break on edge cases. LLMs without RL training learn to say the right things, but not necessarily *do* the right things in the right order. OmniSupportEnv creates the exact training signal needed to teach agents safe, policy-compliant operational behavior.
+
+---
+
+## 🧠 Theme Alignment — #3.1 World Modeling → Professional Tasks
+
+The agent must build and update a dynamic internal model of the world at every step:
+
+- **Customer trust level** — account age, tier, prior flags
+- **Refund eligibility** — based on order status, time since purchase, abuse history
+- **Fraud risk** — risk score, new account signals, high-value disputes
+- **Chargeback state** — must escalate, must NOT refund simultaneously
+- **Enterprise SLA urgency** — P1 incidents require escalation within 1 hour
+- **Previous tool outputs** — decisions depend on what prior tools revealed
+- **Policy constraints** — hard rules that cannot be violated regardless of customer sentiment
+
+This is exactly the structure of **World Modeling for Professional Tasks**: a partially observable, evolving environment where correct action depends on maintaining accurate state, not just reacting to the surface-level request.
+
+---
+
+## 🧩 What the Agent Does
+
+Each episode = one support ticket. The agent receives the ticket text, customer profile, and account context, then takes a sequence of actions to resolve it within **12 steps**.
 
 ```
-reset()  →  ticket arrives: "I was charged twice for order #78234..."
+reset()  →  ticket: "I was charged twice for order #78234..."
 
-step("check_account: USR_4821")     →  account is clean, premium tier    +reward
-step("lookup_order: 78234")         →  duplicate charge confirmed         +reward
-step("process_refund: 78234,49.99") →  refund initiated                   +reward
-step("resolve: duplicate refunded") →  episode ends, final score computed
+step("check_account: USR_4821")     →  account clean, premium tier    +reward
+step("lookup_order: 78234")         →  duplicate charge confirmed      +reward
+step("process_refund: 78234,49.99") →  refund initiated                +reward
+step("send_response: ...")          →  customer notified               +reward
+step("resolve")                     →  episode ends, score computed
 ```
 
-The agent earns reward throughout the episode (dense signal), not just at the end.
+Rewards are **dense** — given at every step — not only at episode end. This creates both short-term guidance and long-horizon incentives.
 
 ---
 
-## Architecture
+## 🏗️ Architecture
 
 ```
 omni-support-env/
 │
-├── inference.py          ← Baseline script: runs LLM agent, emits [START][STEP][END] logs
-├── client.py             ← HTTP client: connects to live HF Space, no Docker needed
-├── models.py             ← Typed Pydantic models: Action, Observation, State
-├── openenv.yaml          ← OpenEnv manifest: name, version, tags, sdk, port
-├── pyproject.toml        ← Python project config + entrypoint
-├── requirements-docker.txt ← Production dependencies for Docker
-├── Dockerfile            ← Root-level Dockerfile (HF Space deployment)
+├── inference.py              ← Runs LLM agent, emits [START][STEP][END] logs
+├── train.py                  ← GRPO training: 3 reward functions, curriculum order
+├── client.py                 ← HTTP client connecting to HF Space
+├── models.py                 ← Pydantic v2: Action, Observation, State models
+├── collect_training_data.py  ← Rollout collection for dataset building
+├── openenv.yaml              ← OpenEnv manifest
+├── Dockerfile                ← Docker build for HF Space deployment
+├── data/rollouts.jsonl       ← 300 collected training rollouts
+├── omni-grpo-output/
+│   ├── training_rewards.csv  ← Per-step reward log (125 rows)
+│   └── reward_curve.png      ← Training chart
 │
 └── server/
-    ├── app.py            ← FastAPI app: wraps environment with OpenEnv server
-    ├── environment.py    ← Core logic: reset(), step(), policy checks, reward dispatch
-    ├── tasks.py          ← 15 hand-crafted tickets + deterministic tool response data
-    ├── tools.py          ← 8 tool implementations: search_kb, lookup_order, etc.
-    ├── reward.py         ← Dense reward engine: step reward + episode reward
-    └── graders.py        ← 3-tier graders: grade_easy, grade_medium, grade_hard
+    ├── app.py                ← FastAPI: /reset /step /health /state /docs
+    ├── environment.py        ← Core logic: reset(), step(), policy checks
+    ├── tasks.py              ← 15 hand-crafted tickets + deterministic tool responses
+    ├── tools.py              ← 8 tool implementations
+    ├── reward.py             ← Dense reward engine (step + episode, 4-component)
+    └── graders.py            ← 3-tier graders: grade_easy / grade_medium / grade_hard
 ```
 
-### How the Files Connect
+---
 
+## 🎯 15 Hand-Crafted Scenarios
+
+### Easy (5) — Single-intent, 1–2 tools, clear resolution
+
+| Task | Scenario | Required Tools |
+|---|---|---|
+| `easy_refund_001` | Duplicate charge refund | check_account, lookup_order, process_refund |
+| `easy_password_001` | Account locked after failed logins | check_account, search_kb |
+| `easy_cancel_001` | Subscription cancellation request | check_account, search_kb |
+| `easy_delivery_001` | Missing / delayed delivery | lookup_order |
+| `easy_update_001` | Billing address update | search_kb |
+
+### Medium (5) — Multi-intent, 3+ tools, policy judgment required
+
+| Task | Scenario | Key Challenge |
+|---|---|---|
+| `med_chargeback_001` | Chargeback filed + refund demanded | Must escalate — NOT refund |
+| `med_partial_refund_001` | Damaged goods, wants partial refund | Photo evidence required first |
+| `med_tech_billing_001` | App crash + billing dispute | Cross-domain triage required |
+| `med_subscription_dispute_001` | Charges after stated cancellation | Verify cancellation record first |
+| `med_api_quota_001` | Enterprise P1 — quota exceeded, prod down | SLA-bound escalation required |
+
+### Hard (5) — Policy traps, compliance, multi-issue tickets
+
+| Task | Scenario | Trap / Risk |
+|---|---|---|
+| `hard_fraud_001` | $847 claim, 25-day account, risk_score=0.87 | Must flag + escalate, NOT refund |
+| `hard_abuse_001` | 4 refunds requested in 90 days | Decline all — refund abuse policy |
+| `hard_enterprise_breach_001` | API key compromise, calls from 3 countries | Security flag + P1 escalation |
+| `hard_bulk_001` | Reseller demanding bulk refunds for 12 accounts | Account Management team only |
+| `hard_gdpr_001` | GDPR data request + account hack + refund combined | Security flag + escalate + route GDPR separately |
+
+---
+
+## 🔧 Action Space
+
+| Action | Description |
+|---|---|
+| `search_kb` | Search company knowledge base |
+| `lookup_order` | Retrieve order details and status |
+| `check_account` | Get account tier, flags, history |
+| `process_refund` | Initiate a refund (policy-restricted) |
+| `flag_security` | Raise a fraud/security alert |
+| `ask_user` | Request clarification from customer |
+| `send_response` | Send a message to the customer |
+| `escalate` | Escalate to specialist team |
+| `resolve` | Close ticket as resolved |
+| `close_no_action` | Close ticket with no action taken |
+
+---
+
+## 🏆 Reward System
+
+### Layer 1 — Dense Per-Step Rewards
+
+| Signal | Reward |
+|---|---|
+| First use of required tool | +0.08 |
+| Correct security flag (when required) | +0.12 |
+| Correct escalation (when required) | +0.10 |
+| Meaningful communication to customer | +0.03 |
+| Refund on active fraud trap | −0.20 |
+| Refund on refund abuse trap | −0.15 |
+
+### Layer 2 — Final Episode Score (4-component weighted sum)
+
+| Component | Weight | What It Measures |
+|---|---|---|
+| Resolution correctness | **40%** | Right resolution type + keywords + escalation |
+| Tool use coverage | **25%** | Were all required tools used? |
+| Policy compliance | **20%** | Zero violations (each costs −0.25) |
+| Step efficiency | **15%** | Resolved within expected step budget? |
+
+### Hard Trap Multipliers
+
+| Trap Missed | Score Multiplier |
+|---|---|
+| Missed mandatory security flag | × 0.30 |
+| Issued refund on fraud trap | × 0.20 |
+| Tried to delete account without verification | × 0.10 |
+
+---
+
+## 🛡️ Policy Engine
+
+4 hard deterministic rules enforced on every action — cannot be bypassed:
+
+| Rule | Violation Code |
+|---|---|
+| Must check_account before process_refund | `REFUND_WITHOUT_ACCOUNT_CHECK` |
+| Must not refund accounts flagged as high-risk / new | `REFUND_ON_SUSPICIOUS_NEW_ACCOUNT` |
+| Must escalate before refunding during active chargeback | `REFUND_DURING_CHARGEBACK` |
+| Must not close_no_action on GDPR requests | `GDPR_REQUEST_CLOSED_WITHOUT_ROUTING` |
+
+---
+
+## 📊 Baseline Results
+
+**Model:** Qwen/Qwen2.5-72B-Instruct (zero-shot, no fine-tuning)
+
+| Difficulty | Tasks | Avg Score | Pass Rate |
+|---|---|---|---|
+| Easy | 5 | **0.6145** | 5 / 5 ✅ |
+| Medium | 5 | **0.5628** | 3 / 5 ⚠️ |
+| Hard | 5 | **0.7412** | 5 / 5 ✅ |
+| **Overall** | **15** | **0.6395** | **13 / 15** |
+
+### Per-Task Breakdown
+
+| Task | Score | Status | Steps Used |
+|---|---|---|---|
+| easy_refund_001 | 0.7413 | ✅ PASS | 5 / 12 |
+| easy_password_001 | 0.6900 | ✅ PASS | 4 / 12 |
+| easy_cancel_001 | 0.7413 | ✅ PASS | 4 / 12 |
+| easy_delivery_001 | 0.7300 | ✅ PASS | 3 / 12 |
+| easy_update_001 | 0.7300 | ✅ PASS | 3 / 12 |
+| med_chargeback_001 | 0.4778 | ❌ FAIL | 5 / 12 |
+| med_partial_refund_001 | 0.6913 | ✅ PASS | 6 / 12 |
+| med_tech_billing_001 | 0.4028 | ❌ FAIL | 5 / 12 |
+| med_subscription_dispute_001 | 0.6800 | ✅ PASS | 5 / 12 |
+| med_api_quota_001 | 0.7400 | ✅ PASS | 4 / 12 |
+| hard_fraud_001 | 0.7600 | ✅ PASS | 4 / 12 |
+| hard_abuse_001 | 0.6258 | ✅ PASS | 4 / 12 |
+| hard_enterprise_breach_001 | 0.8000 | ✅ PASS | 5 / 12 |
+| hard_bulk_001 | 0.7200 | ✅ PASS | 4 / 12 |
+| hard_gdpr_001 | 0.8000 | ✅ PASS | 5 / 12 |
+
+**Key Observation:** The model handles easy and hard tasks well, but struggles specifically on medium tasks requiring cross-domain triage. `med_chargeback_001` and `med_tech_billing_001` both failed because the agent rushed to refund without completing required investigation steps — the clearest training signal for RL improvement.
+
+---
+
+### Per-Task Episode Traces
+
+<details>
+<summary>📂 Easy Tasks</summary>
+
+**easy_refund_001**
+![easy_refund_001](outputs/easy_refund_001.png)
+
+**easy_password_001**
+![easy_password_001](outputs/easy_password_001.png)
+
+**easy_cancel_001**
+![easy_cancel_001](outputs/easy_cancel_001.png)
+
+**easy_delivery_001**
+![easy_delivery_001](outputs/easy_delivery_001.png)
+
+**easy_update_001**
+![easy_update_001](outputs/easy_update_001.png)
+
+</details>
+
+<details>
+<summary>📂 Medium Tasks</summary>
+
+**med_chargeback_001**
+![med_chargeback_001](outputs/med_chargeback_001.png)
+
+**med_partial_refund_001**
+![med_partial_refund_001](outputs/med_partial_refund_001.png)
+
+**med_tech_billing_001**
+![med_tech_billing_001](outputs/med_tech_billing_001.png)
+
+**med_subscription_dispute_001**
+![med_subscription_dispute_001](outputs/med_subscription_dispute_001.png)
+
+**med_api_quota_001**
+![med_api_quota_001](outputs/med_api_quota_001.png)
+
+</details>
+
+<details>
+<summary>📂 Hard Tasks</summary>
+
+**hard_fraud_001**
+![hard_fraud_001](outputs/hard_fraud_001.png)
+
+**hard_abuse_001**
+![hard_abuse_001](outputs/hard_abuse_001.png)
+
+**hard_enterprise_breach_001**
+![hard_enterprise_breach_001](outputs/hard_enterprise_breach_001.png)
+
+**hard_bulk_001**
+![hard_bulk_001](outputs/hard_bulk_001.png)
+
+**hard_gdpr_001**
+![hard_gdpr_001](outputs/hard_gdpr_001.png)
+
+</details>
+
+## 📈 GRPO Training Results
+
+Training reward improved from **0.09 → 0.241** across 125 steps / 3 epochs — a **2.7× improvement** over the near-random baseline.
+
+![Reward Curve](omni-grpo-output/reward_curve.png)
+
+| Annotation | Meaning |
+|---|---|
+| Light blue (raw) | Per-step raw reward — shows natural RL variance |
+| Dark blue (smoothed) | 5-step moving average — reveals the upward trend |
+| Red dashed | Epoch 1 average (~0.09) — near-random baseline |
+| Green dashed | Final average (0.241) — 2.7× improvement |
+
+**Three clear learning phases:**
+1. **Steps 0–40:** Noisy exploration — model learns basic format compliance
+2. **Steps 40–85:** First consistent improvement — correct tool ordering emerges
+3. **Steps 85–125:** Stable higher-reward behavior — fewer policy violations, better escalation decisions
+
+### Three Reward Functions Used in Training
+
+```python
+reward_format(completion)        # Is output valid JSON?           → 0.0 / 0.3 / 1.0
+reward_valid_action(completion)  # Is action_type a known action?  → 0.0 / 0.5
+reward_env(completion, task_id)  # Environment reward for action   → −0.30 to +0.15
 ```
-inference.py
-    └── client.py  ──────────────────────────────────► HF Space (REST API)
-                                                              │
-                                                         server/app.py
-                                                              │
-                                                    server/environment.py
-                                                    ┌─────────┼──────────┐
-                                               tasks.py   tools.py    reward.py
-                                                                          │
-                                                                      graders.py
-                                                                          │
-                                                                      models.py
+
+---
+
+## 🚀 Training Stack
+
+| Component | Role |
+|---|---|
+| **OpenEnv v0.2.3** | Standard reset()/step() interface, FastAPI server |
+| **TRL GRPOTrainer** | GRPO optimization — rollout collection, reward aggregation |
+| **Unsloth** | Memory-efficient LoRA fine-tuning for GRPO on T4/A100 |
+| **Qwen2.5-1.5B-Instruct** | Training model (fits Colab free GPU) |
+| **Qwen2.5-72B-Instruct** | Baseline evaluation model |
+
+---
+
+## 🌐 API Reference
+
+| Endpoint | Method | Description |
+|---|---|---|
+| `/health` | GET | `{"status":"healthy"}` |
+| `/reset` | POST | Start new episode, returns observation |
+| `/step` | POST | Execute one action, returns obs + reward |
+| `/state` | GET | Current internal episode state |
+| `/docs` | GET | Swagger UI |
+
+```json
+// Reset with specific task
+POST /reset
+{"task_id": "hard_fraud_001"}
+
+// Step payload
+POST /step
+{"action": {"action_type": "check_account", "action_value": "USR_9901"}}
 ```
 
-One agent action flows like this:
-
-1. `inference.py` calls `client.step(action)`
-2. `client.py` sends `POST /step` to the live HF Space
-3. `server/app.py` routes it to `environment.step()`
-4. `environment.py` calls `execute_tool()` from `tools.py`
-5. Tool returns a deterministic response from `tasks.py`
-6. `reward.py` computes the per-step reward
-7. If `done=True`, `graders.py` computes the final episode score
-8. `SupportObservation` is returned all the way back to `inference.py`
-9. `inference.py` prints the `[STEP]` log line
-
 ---
 
-## Action Space
-
-The agent picks one action type per step and provides a free-text value.
-
-| action_type      | action_value format               | What it does                        |
-|------------------|-----------------------------------|-------------------------------------|
-| `search_kb`      | `"refund policy"`                 | Search internal knowledge base      |
-| `lookup_order`   | `"78234"`                         | Get order status, amount, flags     |
-| `check_account`  | `"USR_4821"`                      | Get account tier, risk score, flags |
-| `process_refund` | `"78234, 49.99, duplicate charge"`| Issue a refund (CSV format)         |
-| `flag_security`  | `"USR_9901, suspected fraud"`     | Raise security alert on account     |
-| `ask_user`       | `"Can you confirm order number?"` | Ask the customer a question         |
-| `send_response`  | `"Your refund has been processed"`| Send a message to the customer      |
-| `escalate`       | `"Chargeback needs specialist"`   | Escalate to specialist team         |
-| `resolve`        | `"Issue resolved, ticket closed"` | Mark ticket resolved — ends episode |
-| `close_no_action`| `"Spam ticket"`                   | Close without action — ends episode |
-
----
-
-## Observation Space
-
-After every step the agent sees a `SupportObservation` containing:
-
-| Field                  | Type            | Description                                    |
-|------------------------|-----------------|------------------------------------------------|
-| `ticket_id`            | str             | Unique ticket identifier                       |
-| `ticket_text`          | str             | The original customer message (never changes)  |
-| `user_id`              | str             | Customer account ID                            |
-| `account_tier`         | str             | `free` / `premium` / `enterprise`              |
-| `account_age_days`     | int             | How old the account is (fraud signal)          |
-| `conversation_history` | List[dict]      | Full message history so far                    |
-| `tool_results`         | List[dict]      | Results returned by every tool called so far   |
-| `policy_violations`    | List[str]       | Policies breached so far this episode          |
-| `resolved`             | bool            | Whether a resolution action was taken          |
-| `step_number`          | int             | Current step (1-indexed)                       |
-| `steps_remaining`      | int             | Steps left before forced termination           |
-| `last_feedback`        | str             | Plain-English feedback on last action          |
-| `cumulative_reward`    | float           | Total reward accumulated so far                |
-| `done`                 | bool            | Whether the episode has ended                  |
-| `reward`               | float or None   | Reward from the last action                    |
-
----
-
-## Tasks — 15 Scenarios Across 3 Difficulty Levels
-
-### Easy (5 tasks) — Score range: 0.65–0.85
-Clear single-intent tickets. 1–2 tools needed. A well-prompted LLM should handle these cleanly.
-
-| Task ID                  | Scenario                    | Required Tools                    |
-|--------------------------|-----------------------------|-----------------------------------|
-| `easy_refund_001`        | Duplicate charge refund     | `check_account`, `process_refund` |
-| `easy_password_001`      | Account locked              | `check_account`, `search_kb`      |
-| `easy_cancel_001`        | Subscription cancellation   | `check_account`                   |
-| `easy_delivery_001`      | Missing delivery            | `lookup_order`                    |
-| `easy_update_001`        | Billing address update      | `search_kb`                       |
-
-### Medium (5 tasks) — Score range: 0.40–0.65
-Ambiguous tickets requiring multiple tools and policy judgment. Agent must investigate before acting.
-
-| Task ID                       | Scenario                        | Key Challenge                              |
-|-------------------------------|---------------------------------|--------------------------------------------|
-| `med_chargeback_001`          | Chargeback + delivery dispute   | Must escalate before refunding             |
-| `med_partial_refund_001`      | Damaged goods, keep item        | Must verify with photo evidence policy     |
-| `med_tech_billing_001`        | App crash + billing credit      | Technical + billing cross-over             |
-| `med_subscription_dispute_001`| Cancelled but still charged     | Must verify cancellation record first      |
-| `med_api_quota_001`           | Enterprise quota exceeded       | SLA-bound P1 escalation required           |
-
-### Hard (5 tasks) — Score range: 0.20–0.40
-Fraud signals, policy traps, multi-issue tickets. Even frontier models struggle here.
-
-| Task ID                      | Scenario                     | Trap                                          |
-|------------------------------|------------------------------|-----------------------------------------------|
-| `hard_fraud_001`             | 3 unauthorised transactions  | Must flag security BEFORE refunding — new account with risk_score 0.87 |
-| `hard_abuse_001`             | 4 refund requests in 90 days | Must decline — refund abuse policy             |
-| `hard_enterprise_breach_001` | Compromised API key          | Security incident + audit + escalation all required |
-| `hard_bulk_001`              | 12 accounts, bulk refunds    | Cannot process individually — must escalate  |
-| `hard_gdpr_001`              | GDPR + hack + refund in one  | Must triage into separate tickets, not delete blindly |
-
----
-
-## Reward Design
-
-### Step Reward (dense — fires every action)
-
-The agent receives signal on every single action, not just at the end. This makes learning faster.
-
-| Condition                                    | Reward  |
-|----------------------------------------------|---------|
-| First use of a required tool                 | +0.08   |
-| Correctly flagging security (fraud tasks)    | +0.12   |
-| Correctly escalating when required           | +0.10   |
-| Meaningful message to customer               | +0.03   |
-| Refunding before security review (trap)      | −0.20   |
-| Refunding a serial abuser (trap)             | −0.15   |
-
-### Episode Reward (final — fires at done=True)
-
-Weighted sum of four component scores, each in [0.0, 1.0]:
-
-```
-Final Score = resolution(0.40) + tool_use(0.25) + policy(0.20) + efficiency(0.15)
-```
-
-| Component      | Weight | What it measures                                      |
-|----------------|--------|-------------------------------------------------------|
-| Resolution     | 40%    | Correct resolution type + keywords + escalation       |
-| Tool use       | 25%    | Coverage of required tools, penalises excess calls    |
-| Policy         | 20%    | 1.0 if clean, −0.25 per violation                     |
-| Efficiency     | 15%    | Full score if within expected steps, decays after     |
-
-**Hard penalties applied on top:**
-- Missed mandatory security flag on fraud task: score × 0.30
-- Fell into refund trap: score × 0.20
-
-### Policy Engine
-
-These rules are checked deterministically on every action:
-
-| Rule                                     | Violation code                        |
-|------------------------------------------|---------------------------------------|
-| Refund before checking account           | `REFUND_WITHOUT_ACCOUNT_CHECK`        |
-| Refund on new suspicious account         | `REFUND_ON_SUSPICIOUS_NEW_ACCOUNT`    |
-| Refund while chargeback is pending       | `REFUND_DURING_CHARGEBACK`            |
-| Closing GDPR request without routing     | `GDPR_REQUEST_CLOSED_WITHOUT_ROUTING` |
-
----
-
-## Baseline Scores
-
-Measured using `Qwen/Qwen2.5-72B-Instruct` via HuggingFace router:
-
-| Task                    | Difficulty | Score  |
-|-------------------------|------------|--------|
-| `easy_refund_001`       | easy       | ~0.74  |
-| `med_chargeback_001`    | medium     | ~0.47  |
-| `hard_fraud_001`        | hard       | ~0.28  |
-| **Average**             |            | ~0.50  |
-
-Good agents score above random (0.0) on hard tasks. Bad agents fall into traps and score near 0.0.
-
----
-
-## Local Setup
-
-### Prerequisites
-
-- Python 3.11+
-- Docker Desktop
-- A HuggingFace token (free): https://huggingface.co/settings/tokens
-
-### Install
+## 🚦 Quick Start
 
 ```bash
-git clone https://github.com/shraddhashahaof/omni-support-env
-cd omni-support-env
+# Prerequisites
+pip install requests openai python-dotenv
 
-python -m venv venv
-source venv/bin/activate          # Windows: venv\Scripts\activate
+# Configure .env
+HF_TOKEN=hf_your_token_here
+API_BASE_URL=https://router.huggingface.co/v1
+MODEL_NAME=Qwen/Qwen2.5-72B-Instruct
+ENV_URL=https://shraddhashaha-omni-support-env.hf.space
 
-pip install -r requirements-docker.txt
-pip install pytest httpx
-```
+# Run all 15 tasks
+python inference.py
 
-### Run the server locally (no Docker)
+# Run a specific task
+python inference.py hard_fraud_001
 
-```bash
-cd server
-uvicorn app:app --host 0.0.0.0 --port 8000 --reload
-```
+# Collect training rollouts
+python collect_training_data.py --episodes 300 --out data/rollouts.jsonl
 
-Test it:
+# GRPO training (CPU simulated — produces reward curve)
+python train.py
 
-```bash
-curl http://localhost:8000/health
-# {"status":"healthy"}
-
-curl -X POST http://localhost:8000/reset \
-  -H "Content-Type: application/json" \
-  -d '{}'
-
-curl -X POST http://localhost:8000/step \
-  -H "Content-Type: application/json" \
-  -d '{"action":{"action_type":"check_account","action_value":"USR_4821"}}'
-```
-
-### Run the tests
-
-```bash
-python test_phase1.py   # models, reset(), stub step()
-python test_phase2.py   # 15 tasks, 6 tools, tool router
-python test_phase3.py   # reward components, step rewards, traps
-python test_phase4.py   # full episodes, policy checks, score ordering
-```
-
-Expected output for all four:
-```
-✅ ALL PHASE X TESTS PASSED
+# GRPO training (real GPU)
+pip install trl transformers datasets torch matplotlib unsloth
+python train.py --gpu
 ```
 
 ---
 
-## Docker
-
-### Build
+## 🐳 Docker
 
 ```bash
 docker build -t omni-support-env:latest -f server/Dockerfile .
-```
-
-### Run
-
-```bash
 docker run -d --name omni-test -p 7860:7860 omni-support-env:latest
-sleep 8
 curl http://localhost:7860/health
 # {"status":"healthy"}
 ```
 
-### Stop
-
-```bash
-docker stop omni-test && docker rm omni-test
-```
-
 ---
 
-## Running the Inference Script
+## ✅ OpenEnv Compliance
 
-The inference script runs the LLM agent against all 3 tasks and produces the mandatory evaluation logs.
-
-### Environment variables
-
-```bash
-# Required
-HF_TOKEN=hf_your_token_here
-
-# Optional (defaults shown)
-API_BASE_URL=https://router.huggingface.co/v1
-MODEL_NAME=Qwen/Qwen2.5-72B-Instruct
-LOCAL_IMAGE_NAME=omni-support-env:latest
-```
-
-Create a `.env` file in the project root with the above, then:
-
-```bash
-pip install httpx python-dotenv openai
-python inference.py
-```
-
-### Expected output format
-
-```
-[INFO] Model:  Qwen/Qwen2.5-72B-Instruct
-[INFO] Tasks:  ['easy_refund_001', 'med_chargeback_001', 'hard_fraud_001']
-
-[START] task=easy_refund_001 env=omni_support_env model=Qwen/Qwen2.5-72B-Instruct
-[STEP] step=1 action=check_account:USR_4821 reward=0.00 done=false error=null
-[STEP] step=2 action=lookup_order:78234 reward=0.08 done=false error=null
-[STEP] step=3 action=process_refund:78234,49.99,duplicate reward=0.08 done=false error=null
-[STEP] step=4 action=resolve:duplicate charge refunded reward=0.58 done=true error=null
-[END] success=true steps=4 score=0.74 rewards=0.00,0.08,0.08,0.58
-
-[START] task=med_chargeback_001 env=omni_support_env model=Qwen/Qwen2.5-72B-Instruct
-...
-[END] success=false steps=8 score=0.47 rewards=...
-
-[SUMMARY] tasks=3 avg_score=0.4967
-```
-
-The inference script connects directly to the live HF Space — no local Docker required.
-
----
-
-## Deployment
-
-The environment is deployed as a Docker-based HuggingFace Space.
-
-```bash
-pip install huggingface_hub
-python -m huggingface_hub.commands.huggingface_cli login
-
-openenv push --repo-id shraddhashaha/omni-support-env
-```
-
-Live URL: `https://shraddhashaha-omni-support-env.hf.space`
-
-Verify:
-```bash
-curl https://shraddhashaha-omni-support-env.hf.space/health
-# {"status":"healthy"}
-```
-
----
-
-## API Endpoints
-
-Once running (locally or on HF Spaces):
-
-| Endpoint  | Method | Description                              |
-|-----------|--------|------------------------------------------|
-| `/health` | GET    | Returns `{"status":"healthy"}`           |
-| `/reset`  | POST   | Start a new episode, returns observation |
-| `/step`   | POST   | Execute one action, returns observation + reward |
-| `/state`  | GET    | Returns current internal episode state   |
-| `/docs`   | GET    | Interactive API docs (Swagger UI)        |
-
-### Reset with specific task
-
-```json
-POST /reset
-{"task_id": "hard_fraud_001"}
-```
-
-### Step payload
-
-```json
-POST /step
-{
-  "action": {
-    "action_type": "check_account",
-    "action_value": "USR_9901"
-  }
-}
-```
-
----
-
-## OpenEnv Compliance
-
-This environment fully implements the OpenEnv specification:
-
-- Typed `Action`, `Observation`, `State` models via Pydantic v2
+- Typed Action, Observation, State models via Pydantic v2
 - `reset()` → returns initial `SupportObservation`
 - `step(action)` → returns `(observation, reward, done)`
 - `state` property → returns `SupportState`
-- `openenv.yaml` with correct metadata and tags
-- Passes `openenv validate`
+- `openenv.yaml` with correct metadata, tags, sdk, port
 - Deployed as Docker-based HuggingFace Space on port 7860
 - Tagged with `openenv` for hub discovery
+- Passes `openenv validate`
 
 ---
 
-## Project Info
+## 💡 Why This Submission Stands Out
 
-**Hackathon:** Meta PyTorch × Scaler OpenEnv Round 1  
-**Team:** Solo — Shraddha Shaha [AgentOne] 
-**Domain:** Customer Operations / Enterprise Support  
-**Framework:** OpenEnv v0.2.3  
-**Model tested:** Qwen/Qwen2.5-72B-Instruct  
-**GitHub:** https://github.com/shraddhashahaof/omni-support-env  
-**HF Space:** https://huggingface.co/spaces/shraddhashaha/omni-support-env
+Unlike toy environments, OmniSupportEnv teaches LLMs to perform **economically valuable professional work**. It evaluates whether an AI can:
+
+- Think before acting (use tools before issuing refunds)
+- Follow policy under adversarial inputs (customers demanding things they shouldn't get)
+- Detect fraud signals and escalate safely
+- Handle multi-intent tickets (GDPR + security + billing in one message)
+- Recover from ambiguous workflows without hallucinating actions
+
+This is much closer to real enterprise AI deployment than games or coding benchmarks — and the reward signal is designed so that reward hacking is deliberately difficult.
+
+---
+
+## 🔮 Future Extensions
+
+- Multi-agent escalation teams (cooperative RL)
+- CRM integrations (Salesforce, Zendesk)
+- Long-term customer memory across episodes
+- Multilingual ticket support
+- Human feedback fine-tuning (RLHF layer)
+- Voice support workflows
+- Analytics dashboard for resolution quality
+
+---
+
+**Built by:** Shraddha Shaha | **Team:** AgentOne | **Round 2 — OpenEnv Hackathon**
+
+**HF Space:** https://huggingface.co/spaces/shraddhashaha/omni-support-env  
+**GitHub:** https://github.com/shraddhashahaof/omni-support-env
