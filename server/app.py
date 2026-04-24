@@ -35,7 +35,7 @@ DASHBOARD = """<!DOCTYPE html>
 <head>
 <meta charset="UTF-8">
 <meta http-equiv="refresh" content="15">
-<title>OmniSupportEnv</title>
+<title>OmniSupportEnv v2</title>
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
   body{font-family:system-ui,sans-serif;background:#0f1117;color:#e0e0e0;padding:2rem}

@@ -1,3 +1,13 @@
+---
+title: OmniSupportEnv
+emoji: 🤖
+colorFrom: blue
+colorTo: green
+sdk: docker
+app_port: 7860
+pinned: false
+---
+
 # 🤖 OmniSupportEnv
 
 > A multi-step Reinforcement Learning environment where an AI agent resolves real enterprise customer support tickets — using tools, enforcing company policy, detecting fraud, and handling compliance across 15 hand-crafted scenarios.
@@ -406,7 +416,7 @@ curl http://localhost:7860/health
 
 ---
 
-## 💡 Why This Submission Stands Out
+## 💡 What makes this Environment meaningful
 
 Unlike toy environments, OmniSupportEnv teaches LLMs to perform **economically valuable professional work**. It evaluates whether an AI can:
 

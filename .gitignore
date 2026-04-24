@@ -38,6 +38,7 @@ Thumbs.db
 # Local data / outputs
 data/
 omni-grpo-output/
+outputs/
 
 # Git internals (usually unnecessary but harmless to exclude patterns elsewhere)
 *.tmp
