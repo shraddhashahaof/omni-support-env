@@ -1,5 +1,21 @@
 # train.py — OmniSupportEnv GRPO Training (local env, simulated rewards for demo)
-import json, os, sys, time, random, csv
+# Optional Unsloth import (only if GPU exists)
+import torch
+
+USE_UNSLOTH = torch.cuda.is_available()
+
+if USE_UNSLOTH:
+    import unsloth
+    from unsloth import FastLanguageModel
+
+import os
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+from transformers import AutoTokenizer
+
+import sys, time, random, csv
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "server"))
 
 from dotenv import load_dotenv
