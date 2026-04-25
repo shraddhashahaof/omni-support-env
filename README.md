@@ -16,7 +16,7 @@ pinned: false
 
 ## Hackathon Submission
 
-| Field | Detail |
+| Field <img width='250' height='1'> | Detail <img width='250' height='1'> |
 |:--|:--|
 | **Hackathon** | Meta PyTorch × Scaler OpenEnv Hackathon — India 2026 |
 | **Round** | Round 2 (Onsite) |
@@ -49,7 +49,7 @@ Every company employs thousands of support agents to handle billing disputes, fr
 
 The agent builds and updates an internal world model every step:
 
-| State Dimension | What the agent tracks |
+| State Dimension <img width='250' height='1'> | What the agent tracks <img width='250' height='1'> |
 |:--|:--|
 | Customer trust | Account age, tier, prior flags, risk score |
 | Refund eligibility | Order status, purchase date, abuse history |
@@ -106,7 +106,7 @@ omni-support-env/
 
 ### Easy — single intent, 1–2 tools
 
-| Task ID | Scenario | Required Tools |
+| Task ID <img width='250' height='1'> | Scenario <img width='250' height='1'> | Required Tools <img width='250' height='1'> |
 |:--|:--|:--|
 | `easy_refund_001` | Duplicate charge refund | check_account, lookup_order, process_refund |
 | `easy_password_001` | Account locked after failed logins | check_account, search_kb |
@@ -116,7 +116,7 @@ omni-support-env/
 
 ### Medium — multi-intent, 3+ tools, policy judgment required
 
-| Task ID | Scenario | Key Challenge |
+| Task ID <img width='250' height='1'> | Scenario <img width='250' height='1'> | Key Challenge <img width='250' height='1'> |
 |:--|:--|:--|
 | `med_chargeback_001` | Chargeback filed + refund demanded | Must escalate first — refunding is a policy violation |
 | `med_partial_refund_001` | Damaged goods, wants partial refund | Photo evidence policy must be cited |
@@ -126,7 +126,7 @@ omni-support-env/
 
 ### Hard — policy traps, compliance, adversarial inputs
 
-| Task ID | Scenario | Trap |
+| Task ID <img width='250' height='1'> | Scenario <img width='250' height='1'> | Trap <img width='250' height='1'> |
 |:--|:--|:--|
 | `hard_fraud_001` | $847 claim, 25-day account, risk_score=0.87 | Must flag + escalate — NOT refund |
 | `hard_abuse_001` | 4 refunds in 90 days, no valid reason | Must decline — refund_abuse_flag active |
@@ -138,7 +138,7 @@ omni-support-env/
 
 ## Action Space
 
-| Action | Value Format | What It Does |
+| Action <img width='250' height='1'> | Value Format <img width='250' height='1'> | What It Does <img width='250' height='1'> |
 |:--|:--|:--|
 | `search_kb` | keyword | Search internal knowledge base |
 | `lookup_order` | order_id | Get order status, amount, flags |
@@ -157,7 +157,7 @@ omni-support-env/
 
 ### Layer 1 — Dense Per-Step Rewards (every action)
 
-| Signal | Reward |
+| Signal <img width='250' height='1'> | Reward <img width='250' height='1'> |
 |:--|:--|
 | First use of a required tool | +0.08 |
 | Correct security flag on fraud task | +0.12 |
@@ -174,7 +174,7 @@ omni-support-env/
 Final Score = resolution(0.40) + tool_use(0.25) + policy(0.20) + efficiency(0.15)
 ```
 
-| Component | Weight | What It Measures |
+| Component <img width='250' height='1'> | Weight <img width='250' height='1'> | What It Measures <img width='250' height='1'> |
 |:--|:--|:--|
 | Resolution | 40% | Correct resolution type + keywords + escalation |
 | Tool use | 25% | Coverage of required tools, penalises excess |
@@ -183,7 +183,7 @@ Final Score = resolution(0.40) + tool_use(0.25) + policy(0.20) + efficiency(0.15
 
 ### Hard Trap Multipliers (applied after weighted sum)
 
-| Trap Triggered | Score Multiplier |
+| Trap Triggered <img width='250' height='1'> | Score Multiplier <img width='250' height='1'> |
 |:--|:--|
 | Missed mandatory security flag | × 0.25 |
 | Refunded during active fraud trap | × 0.15 |
@@ -196,7 +196,7 @@ Final Score = resolution(0.40) + tool_use(0.25) + policy(0.20) + efficiency(0.15
 
 Enforced deterministically on every action. Cannot be bypassed.
 
-| Rule | Violation Code |
+| Rule <img width='250' height='1'> | Violation Code <img width='250' height='1'> |
 |:--|:--|
 | Must call check_account before process_refund | `REFUND_WITHOUT_ACCOUNT_CHECK` |
 | Must not refund new high-risk accounts | `REFUND_ON_SUSPICIOUS_NEW_ACCOUNT` |
@@ -210,7 +210,7 @@ Enforced deterministically on every action. Cannot be bypassed.
 
 **Model:** Qwen/Qwen2.5-72B-Instruct — zero-shot, no fine-tuning
 
-| Difficulty | Tasks | Avg Score | Pass Rate |
+| Difficulty <img width='250' height='1'> | Tasks <img width='250' height='1'> | Avg Score <img width='250' height='1'> | Pass Rate <img width='250' height='1'> |
 |:--|:--|:--|:--|
 | Easy | 5 | 0.6858 | 5 / 5 ✅ |
 | Medium | 5 | 0.6606 | 4 / 5 ⚠️ |
@@ -219,7 +219,7 @@ Enforced deterministically on every action. Cannot be bypassed.
 
 ### Per-Task Results
 
-| Task | Score | Status | Steps |
+| Task <img width='250' height='1'> | Score <img width='250' height='1'> | Status <img width='250' height='1'> | Steps <img width='250' height='1'> |
 |:--|:--|:--|:--|
 | easy_refund_001 | 0.7413 | ✅ PASS | 5 / 12 |
 | easy_password_001 | 0.7100 | ✅ PASS | 4 / 12 |
@@ -243,7 +243,7 @@ Enforced deterministically on every action. Cannot be bypassed.
 
 A 50× smaller model trained for 32 minutes on a T4 GPU to match the 72B Oracle.
 
-| Model | Training | Easy Pass | Medium Pass | Hard Pass | Overall |
+| Model <img width='250' height='1'> | Training <img width='250' height='1'> | Easy Pass <img width='250' height='1'> | Medium Pass <img width='250' height='1'> | Hard Pass <img width='250' height='1'> | Overall <img width='250' height='1'> |
 |:--|:--|:--|:--|:--|:--|
 | Qwen-72B (Oracle baseline) | None | 100% | 80% | 100% | **93%** |
 | Qwen-1.5B (zero-shot) | None | 40% | 0% | 0% | **13%** |
@@ -251,7 +251,7 @@ A 50× smaller model trained for 32 minutes on a T4 GPU to match the 72B Oracle.
 
 ![Reward Curve](omni-grpo-output/reward_curve.png)
 
-| Phase | Steps | What the Model Learned |
+| Phase <img width='250' height='1'> | Steps <img width='250' height='1'> | What the Model Learned <img width='250' height='1'> |
 |:--|:--|:--|
 | Exploration | 0–40 | Basic JSON format compliance |
 | Improvement | 40–85 | Correct tool ordering emerges |
@@ -270,7 +270,7 @@ reward_policy(completion)        # Policy compliance check → −0.30 / 0.0 / +
 
 ## Training Stack
 
-| Component | Version | Role |
+| Component <img width='250' height='1'> | Version <img width='250' height='1'> | Role <img width='250' height='1'> |
 |:--|:--|:--|
 | OpenEnv | v0.2.3 | Standard reset() / step() interface |
 | TRL GRPOTrainer | latest | Rollout collection, reward aggregation, optimization |
@@ -319,7 +319,7 @@ reward_policy(completion)        # Policy compliance check → −0.30 / 0.0 / +
 
 ## API Reference
 
-| Endpoint | Method | Description |
+| Endpoint <img width='250' height='1'> | Method <img width='250' height='1'> | Description <img width='250' height='1'> |
 |:--|:--|:--|
 | `/health` | GET | Returns `{"status":"healthy"}` |
 | `/reset` | POST | Start new episode, returns SupportObservation |
@@ -385,7 +385,7 @@ curl http://localhost:7860/health
 
 ## OpenEnv Compliance
 
-| Requirement | Status |
+| Requirement <img width='250' height='1'> | Status <img width='250' height='1'> |
 |:--|:--|
 | Typed Action / Observation / State via Pydantic v2 | ✅ |
 | `reset()` returns SupportObservation | ✅ |
