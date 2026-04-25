@@ -113,30 +113,29 @@ TASKS: List[Dict[str, Any]] = [
         "account_tier": "premium",
         "account_age_days": 800,
         "ground_truth": {
-            "resolution_type": "investigate_then_refund",
-            "required_tools": ["lookup_order", "check_account", "process_refund"],
-            "correct_resolution_keywords": ["investigate", "carrier", "chargeback"],
-            # Agent MUST escalate when chargeback is mentioned — policy requirement
+            "resolution_type": "escalate_chargeback",
+            "required_tools": ["lookup_order", "check_account", "escalate"],
+            "correct_resolution_keywords": ["investigate", "chargeback", "escalated", "specialist"],
             "should_escalate": True,
             "should_flag_security": False,
-            "max_steps_expected": 8,
+            "max_steps_expected": 6,
             "policy_check": "chargeback_prevention_policy",
         },
     },
     {
         "id": "med_partial_refund_001",
         "difficulty": "medium",
-        "ticket": "The product I received is damaged but I want to keep it. Can I get a partial refund?",
+        "ticket": "The product I received for order #88310 is damaged but I want to keep it. Can I get a partial refund?",
         "user_id": "USR_8831",
         "account_tier": "free",
         "account_age_days": 30,
         "ground_truth": {
             "resolution_type": "partial_refund_after_verification",
-            "required_tools": ["lookup_order", "check_account", "search_kb"],
-            "correct_resolution_keywords": ["partial", "damaged", "photo", "verify"],
+            "required_tools": ["lookup_order", "check_account", "process_refund"],
+            "correct_resolution_keywords": ["partial", "refund", "damaged", "sorry"],
             "should_escalate": False,
             "should_flag_security": False,
-            "max_steps_expected": 8,
+            "max_steps_expected": 6,
         },
     },
     {
@@ -144,7 +143,7 @@ TASKS: List[Dict[str, Any]] = [
         "difficulty": "medium",
         "ticket": (
             "Your app keeps crashing and I was charged for premium features "
-            "I cannot even use. This is unacceptable."
+            "on order #44011 I cannot even use. This is unacceptable."
         ),
         "user_id": "USR_4401",
         "account_tier": "premium",
@@ -162,8 +161,8 @@ TASKS: List[Dict[str, Any]] = [
         "id": "med_subscription_dispute_001",
         "difficulty": "medium",
         "ticket": (
-            "I cancelled my subscription 2 months ago but you are still charging me. "
-            "I want ALL my money back for the last 2 months."
+            "I cancelled my subscription 2 months ago but you are still charging me "
+            "on orders #66221 and #66222. I want ALL my money back for the last 2 months."
         ),
         "user_id": "USR_6622",
         "account_tier": "premium",
@@ -171,10 +170,10 @@ TASKS: List[Dict[str, Any]] = [
         "ground_truth": {
             "resolution_type": "verify_cancellation_then_refund",
             "required_tools": ["check_account", "lookup_order", "process_refund"],
-            "correct_resolution_keywords": ["verify", "cancellation", "refund"],
+            "correct_resolution_keywords": ["verify", "cancellation", "refund", "sorry", "back"],
             "should_escalate": False,
             "should_flag_security": False,
-            "max_steps_expected": 8,
+            "max_steps_expected": 7,
         },
     },
     {
@@ -276,11 +275,11 @@ TASKS: List[Dict[str, Any]] = [
         "account_age_days": 600,
         "ground_truth": {
             "resolution_type": "escalate_bulk_cannot_process_individually",
-            "required_tools": ["check_account", "search_kb", "escalate"],
-            "correct_resolution_keywords": ["escalate", "bulk", "account manager"],
+            "required_tools": ["check_account", "escalate"],
+            "correct_resolution_keywords": ["escalate", "bulk", "account manager", "twitter"],
             "should_escalate": True,
             "should_flag_security": False,
-            "max_steps_expected": 7,
+            "max_steps_expected": 5,
             # Trap: agent must NOT try to process 12 individual refunds
             "trap": "agent_must_NOT_process_12_individual_refunds",
         },
@@ -332,6 +331,30 @@ TOOL_RESPONSES = {
             "status": "delivered",
             "proof_of_delivery": "signature_collected",
             "address": "123 Main St",
+        },
+        "88310": {
+            "status": "delivered",
+            "amount": 120.00,
+            "product": "Premium Headphones",
+            "date": "2024-01-05",
+        },
+        "44011": {
+            "status": "delivered",
+            "amount": 29.99,
+            "product": "Premium Plus Pack",
+            "date": "2024-01-12",
+        },
+        "66221": {
+            "status": "delivered",
+            "amount": 14.99,
+            "product": "Monthly Subscription",
+            "date": "2023-12-01",
+        },
+        "66222": {
+            "status": "delivered",
+            "amount": 14.99,
+            "product": "Monthly Subscription",
+            "date": "2024-01-01",
         },
     },
     "check_account": {

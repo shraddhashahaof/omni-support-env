@@ -635,9 +635,9 @@ def difficulty_label(task_id):
 
 def print_main_header(model_name, task_count):
     print()
-    print(bold("=" * 78))
-    print(bold("OmniSupportEnv — Multi-Agent Evaluation (Branch 7)"))
-    print(bold("=" * 78))
+    print(bold(cyan("=" * 150)))
+    print(bold(cyan(" >>> OmniSupportEnv - Professional Multi-Agent Evaluation <<<")))
+    print(bold(cyan("=" * 150)))
     print(f"Model     : {model_name}")
     print(f"Mode      : LOCAL Multi-Agent")
     print(f"Agents    : TriageAgent + SpecialistAgent")
@@ -649,16 +649,16 @@ def print_main_header(model_name, task_count):
 def print_task_header(task_id, ticket, tier, age):
     label, colour = difficulty_label(task_id)
     print()
-    print(colour(bold(f"TASK: {task_id} | Difficulty: {label}")))
-    print("-" * 78)
+    print(colour(bold(f" [ TASK: {task_id} | Difficulty: {label.upper()} ] ")))
+    print(colour("-" * 150))
     print(f"Ticket  : {ticket}")
     print(f"Account : tier={tier} | age={age}d")
 
 
 def print_triage_result(category, urgency, specialist_display, risk_signals, summary, first_action):
     print()
-    print(cyan(bold("TRIAGE")))
-    print("-" * 78)
+    print(magenta(bold(" [ TRIAGE ANALYSIS ]")))
+    print(magenta("-" * 150))
     print(f"Category     : {category}")
     print(f"Urgency      : {urgency}")
     print(f"Specialist   : {specialist_display}")
@@ -675,8 +675,8 @@ def print_step_output(step, specialist_display, action, value, reward, done, fee
     done_text = green("true") if done else yellow("false")
 
     print()
-    print(bold(f"STEP {step}"))
-    print("-" * 78)
+    print(yellow(bold(f" [ STEP {step} ]")))
+    print(yellow("-" * 150))
     print(f"Agent   : {specialist_display}")
     print(f"Action  : {bold(action)}")
     print(f"Value   : {cyan(value)}")
@@ -704,12 +704,12 @@ def print_step_output(step, specialist_display, action, value, reward, done, fee
 def print_task_result(task_id, success, final_score, steps_taken, elapsed, specialist_display, step_rewards):
     status = green("PASS") if success else red("FAIL")
     bar_n = int(final_score * 20)
-    bar = green("█" * bar_n) + dim("░" * (20 - bar_n))
+    bar = green("#" * bar_n) + dim("-" * (20 - bar_n))
 
     print()
-    print(bold("=" * 78))
-    print(bold("RESULT"))
-    print("-" * 78)
+    print(bold(green("=" * 150)))
+    print(bold(green(" [ TASK RESULT SUMMARY ]")))
+    print(bold(green("=" * 150)))
     print(f"Task         : {task_id}")
     print(f"Status       : {status}")
     print(f"Score        : {final_score:.4f}")
@@ -718,7 +718,7 @@ def print_task_result(task_id, success, final_score, steps_taken, elapsed, speci
     print(f"Time         : {elapsed:.1f}s")
     print(f"Specialist   : {specialist_display}")
     print(f"Step Rewards : [{', '.join(f'{r:.3f}' for r in step_rewards)}]")
-    print(bold("=" * 78))
+    print(bold(green("=" * 150)))
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -799,13 +799,13 @@ CATEGORY: {category} | URGENCY: {urgency}
 RISK SIGNALS: {risk_signals}
 
 AVAILABLE ACTIONS (output exactly one per turn as valid JSON):
-- search_kb       : search policy docs — value = keyword
-- lookup_order    : get order details — value = order ID from ticket
-- check_account   : get account info — value = user_id shown in context
+- search_kb       : search policy docs — value = keyword (e.g. 'refund')
+- lookup_order    : get order details — value = the numeric ID (e.g. '78234')
+- check_account   : get account info — value = the user ID (e.g. 'USR_1234')
 - process_refund  : issue refund — value = "order_id, amount, reason"
 - flag_security   : raise fraud alert — value = "user_id, reason"
-- ask_user        : ask customer for more info — value = YOUR ACTUAL QUESTION (write a real question)
-- send_response   : message to customer — value = YOUR ACTUAL RESPONSE (write a real, helpful message)
+- ask_user        : ask customer for more info — value = YOUR ACTUAL QUESTION
+- send_response   : message to customer — value = YOUR ACTUAL RESPONSE
 - escalate        : escalate to specialist — value = "reason, priority"
 - resolve         : close ticket when done — value = brief resolution summary
 - close_no_action : close without action — value = reason
@@ -823,20 +823,26 @@ Use the tool results you have seen. Be specific — mention order numbers,
 amounts, timelines. Do NOT use placeholder text.
 
 DECISION FLOWCHART:
-- Duplicate charge? → lookup_order → check_account → process_refund → send_response(explain refund) → resolve
-- Password issue?  → check_account → search_kb → send_response(give reset steps) → resolve
-- Cancel request?  → check_account → search_kb → send_response(confirm cancellation + policy) → resolve
-- Late delivery?   → lookup_order → send_response(give tracking info) → resolve
-- Chargeback?      → lookup_order → check_account → search_kb → escalate → send_response(we're investigating) → resolve
-- Fraud signals?   → check_account → flag_security → escalate → send_response(account secured message) → resolve
-- Abuse pattern?   → check_account → search_kb → send_response(decline with policy reason) → resolve
-- Enterprise/P1?   → check_account → search_kb → escalate(P1) → send_response(SLA acknowledgement) → resolve
-- GDPR request?    → check_account → flag_security → search_kb → escalate → send_response(GDPR acknowledgement) → resolve
+- Duplicate charge? → lookup_order → check_account → process_refund → send_response → resolve
+- Password issue?  → check_account → search_kb → send_response → resolve
+- Cancel request?  → check_account → send_response → resolve
+- Late delivery?   → lookup_order → send_response → resolve
+- Chargeback?      → lookup_order → check_account → escalate → send_response → resolve
+- Fraud signals?   → check_account → flag_security → escalate → send_response → resolve
+- Abuse pattern?   → check_account → lookup_order → search_kb → send_response → resolve
+- Enterprise/P1?   → check_account → search_kb → escalate(P1) → send_response → resolve
+- GDPR request?    → check_account → flag_security → search_kb → escalate → send_response → resolve
+- Bulk/Reseller?   → check_account → escalate → send_response → resolve
+- Partial Refund?  → lookup_order → check_account → process_refund → send_response → resolve
+- Sub Dispute?     → check_account → lookup_order → process_refund → send_response → resolve
 
 RULES:
-- Never repeat an action with the same value
-- Call resolve AS SOON AS the required actions are complete (don't over-investigate)
-- Max {max_steps} steps
+- ONLY use the actions listed above. NEVER invent new tool names like 'check_api_key_activity'.
+- Never repeat an action with the same value.
+- Hit ALL mandatory tools mentioned in the flowchart for the specific issue.
+- BULK/RESELLER requests (more than 1 account) MUST be escalated. NEVER process bulk refunds yourself.
+- Call resolve AS SOON AS the required actions are complete (don't over-investigate).
+- Max {max_steps} steps.
 
 Respond ONLY with valid JSON:
 {{"action_type": "<action>", "action_value": "<value>"}}"""
@@ -1066,9 +1072,9 @@ def run_task(env_client, llm_client, task_id, index, total):
 # ══════════════════════════════════════════════════════════════════════════════
 
 def print_summary(scores, task_ids, elapsed_total):
-    print("\n" + bold("=" * 78))
-    print(bold("MULTI-AGENT FINAL SUMMARY"))
-    print(bold("=" * 78))
+    print("\n" + bold(cyan("=" * 150)))
+    print(bold(cyan(" [ MULTI-AGENT FINAL EVALUATION SUMMARY ]")))
+    print(bold(cyan("=" * 150)))
 
     groups = {"easy": [], "med": [], "hard": []}
     for task_id, score in zip(task_ids, scores):
@@ -1081,7 +1087,7 @@ def print_summary(scores, task_ids, elapsed_total):
 
         avg_score = sum(group_scores) / len(group_scores)
         passed = sum(1 for score in group_scores if score >= SUCCESS_THRESHOLD)
-        bar = green("█" * int(avg_score * 20)) + dim("░" * (20 - int(avg_score * 20)))
+        bar = green("#" * int(avg_score * 20)) + dim("-" * (20 - int(avg_score * 20)))
         print(f"{label:<8}: avg={avg_score:.4f} | pass={passed}/{len(group_scores)} | {bar}")
 
     overall = sum(scores) / len(scores) if scores else 0.0

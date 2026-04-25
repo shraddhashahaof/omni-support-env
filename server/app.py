@@ -95,15 +95,15 @@ DASHBOARD = """<!DOCTYPE html>
     <tr><td>easy_cancel_001</td><td><span class="badge easy">EASY</span></td><td>Cancel subscription</td><td>check_account</td></tr>
     <tr><td>easy_delivery_001</td><td><span class="badge easy">EASY</span></td><td>Late delivery</td><td>lookup_order</td></tr>
     <tr><td>easy_update_001</td><td><span class="badge easy">EASY</span></td><td>Billing address</td><td>search_kb</td></tr>
-    <tr><td>med_chargeback_001</td><td><span class="badge medium">MEDIUM</span></td><td>Chargeback threat</td><td>lookup_order, check_account, process_refund</td></tr>
-    <tr><td>med_partial_refund_001</td><td><span class="badge medium">MEDIUM</span></td><td>Damaged product</td><td>lookup_order, check_account, search_kb</td></tr>
-    <tr><td>med_tech_billing_001</td><td><span class="badge medium">MEDIUM</span></td><td>App crash + billing</td><td>search_kb, check_account, process_refund</td></tr>
+    <tr><td>med_chargeback_001</td><td><span class="badge medium">MEDIUM</span></td><td>Chargeback threat</td><td>lookup_order, check_account, escalate</td></tr>
+    <tr><td>med_partial_refund_001</td><td><span class="badge medium">MEDIUM</span></td><td>Damaged product</td><td>lookup_order, check_account, process_refund</td></tr>
+    <tr><td>med_tech_billing_001</td><td><span class="badge medium">MEDIUM</span></td><td>App crash + billing</td><td>search_kb, check_account, process_refund, escalate</td></tr>
     <tr><td>med_subscription_dispute_001</td><td><span class="badge medium">MEDIUM</span></td><td>Subscription dispute</td><td>check_account, lookup_order, process_refund</td></tr>
     <tr><td>med_api_quota_001</td><td><span class="badge medium">MEDIUM</span></td><td>Enterprise quota</td><td>check_account, search_kb, escalate</td></tr>
     <tr><td>hard_fraud_001</td><td><span class="badge hard">HARD</span></td><td>Fraud — new account</td><td>check_account, flag_security, escalate</td></tr>
     <tr><td>hard_abuse_001</td><td><span class="badge hard">HARD</span></td><td>Serial refund abuser</td><td>check_account, lookup_order, search_kb</td></tr>
     <tr><td>hard_enterprise_breach_001</td><td><span class="badge hard">HARD</span></td><td>API key compromised</td><td>check_account, flag_security, search_kb, escalate</td></tr>
-    <tr><td>hard_bulk_001</td><td><span class="badge hard">HARD</span></td><td>Reseller bulk demand</td><td>check_account, search_kb, escalate</td></tr>
+    <tr><td>hard_bulk_001</td><td><span class="badge hard">HARD</span></td><td>Reseller bulk demand</td><td>check_account, escalate</td></tr>
     <tr><td>hard_gdpr_001</td><td><span class="badge hard">HARD</span></td><td>GDPR + hack + refund</td><td>check_account, flag_security, search_kb, escalate</td></tr>
   </table>
 </div>

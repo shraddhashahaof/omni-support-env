@@ -264,5 +264,14 @@ if __name__ == "__main__":
     import sys
     if "--gpu" in sys.argv:
         full_train()
+    elif "--simulated" in sys.argv:
+        print("WARNING: Running simulated loop. This generates FAKE data for UI testing.")
+        print("Do NOT submit this data to the Hackathon judges!")
+        simulated_train()
     else:
-        simulated_train()   # default: works on CPU, produces real reward log + curve
+        print("OmniSupportEnv Training Script")
+        print("------------------------------")
+        print("To run the real GRPO training (requires GPU):")
+        print("  python train.py --gpu")
+        print("\nNote: We HIGHLY recommend using the `omni_support_training.ipynb` Colab notebook")
+        print("for Hackathon evaluation to show real end-to-end training.")
