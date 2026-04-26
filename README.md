@@ -319,6 +319,9 @@ cd omni-support-env
 python -m venv venv && venv\Scripts\activate   # Windows PowerShell
 pip install -r requirements.txt
 
+# Run with Multi-Agent council (CLI with pretty logs)
+python agent.py
+
 # Run all 15 tasks (local env, no HF Space needed)
 python inference.py
 
