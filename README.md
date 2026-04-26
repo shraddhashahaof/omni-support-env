@@ -16,22 +16,23 @@ pinned: false
 
 ## Hackathon Submission
 
-| Field <img width='250' height='1'> | Detail <img width='250' height='1'> |
-|:--|:--|
-| **Hackathon** | Meta PyTorch × Scaler OpenEnv Hackathon — India 2026 |
-| **Round** | Round 2 (Onsite) |
-| **Team Name** | AgentOne |
-| **Builder** | Shraddha Shaha |
-| **Theme** | #3.1 World Modeling → Professional Tasks |
-| **Framework** | OpenEnv v0.2.3 + TRL GRPO + Unsloth |
-| **HF Space** | https://huggingface.co/spaces/shraddhashaha/omni-support-env |
-| **Live Demo** | https://shraddhashaha-omni-support-env.hf.space |
-| **GitHub** | https://github.com/shraddhashahaof/omni-support-env |
-| **Video / Pitch** | [YouTube — 2 min demo](#) |
-| **Blog Post** | [HuggingFace Blog](#) |
-| **Colab Notebook** | [omni_support_training.ipynb](omni_support_training.ipynb) |
-| **Baseline Model** | Qwen/Qwen2.5-72B-Instruct |
-| **Training Model** | Qwen/Qwen2.5-1.5B-Instruct (GRPO, T4 GPU, 32 min) |
+<table width="100%">
+<tr><th align="left" width="22%">Field</th><th align="left">Detail</th></tr>
+<tr><td><b>Hackathon</b></td><td>Meta PyTorch × Scaler OpenEnv Hackathon — India 2026</td></tr>
+<tr><td><b>Round</b></td><td>Round 2 (Onsite)</td></tr>
+<tr><td><b>Team Name</b></td><td>AgentOne</td></tr>
+<tr><td><b>Builder</b></td><td>Shraddha Shaha</td></tr>
+<tr><td><b>Theme</b></td><td>#3.1 World Modeling → Professional Tasks</td></tr>
+<tr><td><b>Framework</b></td><td>OpenEnv v0.2.3 + TRL GRPO + Unsloth</td></tr>
+<tr><td><b>HF Space</b></td><td>https://huggingface.co/spaces/shraddhashaha/omni-support-env</td></tr>
+<tr><td><b>Live Demo</b></td><td>https://shraddhashaha-omni-support-env.hf.space</td></tr>
+<tr><td><b>GitHub</b></td><td>https://github.com/shraddhashahaof/omni-support-env</td></tr>
+<tr><td><b>Video / Pitch</b></td><td><a href="#">YouTube — 2 min demo</a></td></tr>
+<tr><td><b>Blog Post</b></td><td><a href="#">HuggingFace Blog</a></td></tr>
+<tr><td><b>Colab Notebook</b></td><td><a href="omni_support_training.ipynb">omni_support_training.ipynb</a></td></tr>
+<tr><td><b>Baseline Model</b></td><td>Qwen/Qwen2.5-72B-Instruct</td></tr>
+<tr><td><b>Training Model</b></td><td>Qwen/Qwen2.5-1.5B-Instruct (GRPO, T4 GPU, 32 min)</td></tr>
+</table>
 
 ---
 
@@ -49,15 +50,16 @@ Every company employs thousands of support agents to handle billing disputes, fr
 
 The agent builds and updates an internal world model every step:
 
-| State Dimension <img width='250' height='1'> | What the agent tracks <img width='250' height='1'> |
-|:--|:--|
-| Customer trust | Account age, tier, prior flags, risk score |
-| Refund eligibility | Order status, purchase date, abuse history |
-| Fraud risk | Risk score, new account signals, high-value disputes |
-| Chargeback state | Must escalate first, must NOT refund simultaneously |
-| SLA urgency | Enterprise P1 incidents need escalation within 1 hour |
-| Tool history | Decisions depend on what prior tools revealed |
-| Policy constraints | Hard rules enforced regardless of customer pressure |
+<table width="100%">
+<tr><th align="left" width="25%">State Dimension</th><th align="left">What the agent tracks</th></tr>
+<tr><td>Customer trust</td><td>Account age, tier, prior flags, risk score</td></tr>
+<tr><td>Refund eligibility</td><td>Order status, purchase date, abuse history</td></tr>
+<tr><td>Fraud risk</td><td>Risk score, new account signals, high-value disputes</td></tr>
+<tr><td>Chargeback state</td><td>Must escalate first, must NOT refund simultaneously</td></tr>
+<tr><td>SLA urgency</td><td>Enterprise P1 incidents need escalation within 1 hour</td></tr>
+<tr><td>Tool history</td><td>Decisions depend on what prior tools revealed</td></tr>
+<tr><td>Policy constraints</td><td>Hard rules enforced regardless of customer pressure</td></tr>
+</table>
 
 ---
 
@@ -104,52 +106,56 @@ omni-support-env/
 
 ## 15 Hand-Crafted Scenarios
 
-### Easy — single intent, 1–2 tools
+### Easy (5) — Single-intent, 1–2 tools, clear resolution
 
-| Task ID <img width='250' height='1'> | Scenario <img width='250' height='1'> | Required Tools <img width='250' height='1'> |
-|:--|:--|:--|
-| `easy_refund_001` | Duplicate charge refund | check_account, lookup_order, process_refund |
-| `easy_password_001` | Account locked after failed logins | check_account, search_kb |
-| `easy_cancel_001` | Subscription cancellation | check_account, search_kb |
-| `easy_delivery_001` | Missing or delayed delivery | lookup_order |
-| `easy_update_001` | Billing address update | search_kb |
+<table width="100%">
+<tr><th align="left" width="28%">Task ID</th><th align="left" width="36%">Scenario</th><th align="left">Required Tools</th></tr>
+<tr><td><code>easy_refund_001</code></td><td>Duplicate charge refund</td><td>check_account, lookup_order, process_refund</td></tr>
+<tr><td><code>easy_password_001</code></td><td>Account locked after failed logins</td><td>check_account, search_kb</td></tr>
+<tr><td><code>easy_cancel_001</code></td><td>Subscription cancellation</td><td>check_account, search_kb</td></tr>
+<tr><td><code>easy_delivery_001</code></td><td>Missing or delayed delivery</td><td>lookup_order</td></tr>
+<tr><td><code>easy_update_001</code></td><td>Billing address update</td><td>search_kb</td></tr>
+</table>
 
-### Medium — multi-intent, 3+ tools, policy judgment required
+### Medium (5) — Multi-intent, 3+ tools, policy judgment required
 
-| Task ID <img width='250' height='1'> | Scenario <img width='250' height='1'> | Key Challenge <img width='250' height='1'> |
-|:--|:--|:--|
-| `med_chargeback_001` | Chargeback filed + refund demanded | Must escalate first — refunding is a policy violation |
-| `med_partial_refund_001` | Damaged goods, wants partial refund | Photo evidence policy must be cited |
-| `med_tech_billing_001` | App crash + billing dispute | Cross-domain triage required |
-| `med_subscription_dispute_001` | Charged after cancellation | Must verify cancellation record first |
-| `med_api_quota_001` | Enterprise P1 — production down | SLA-bound P1 escalation required |
+<table width="100%">
+<tr><th align="left" width="28%">Task ID</th><th align="left" width="36%">Scenario</th><th align="left">Key Challenge</th></tr>
+<tr><td><code>med_chargeback_001</code></td><td>Chargeback filed + refund demanded</td><td>Must escalate first — refunding is a policy violation</td></tr>
+<tr><td><code>med_partial_refund_001</code></td><td>Damaged goods, wants partial refund</td><td>Photo evidence policy must be cited</td></tr>
+<tr><td><code>med_tech_billing_001</code></td><td>App crash + billing dispute</td><td>Cross-domain triage required</td></tr>
+<tr><td><code>med_subscription_dispute_001</code></td><td>Charged after cancellation</td><td>Must verify cancellation record first</td></tr>
+<tr><td><code>med_api_quota_001</code></td><td>Enterprise P1 — production down</td><td>SLA-bound P1 escalation required</td></tr>
+</table>
 
-### Hard — policy traps, compliance, adversarial inputs
+### Hard (5) — Policy traps, compliance, adversarial inputs
 
-| Task ID <img width='250' height='1'> | Scenario <img width='250' height='1'> | Trap <img width='250' height='1'> |
-|:--|:--|:--|
-| `hard_fraud_001` | $847 claim, 25-day account, risk_score=0.87 | Must flag + escalate — NOT refund |
-| `hard_abuse_001` | 4 refunds in 90 days, no valid reason | Must decline — refund_abuse_flag active |
-| `hard_enterprise_breach_001` | API key compromised, calls from 3 countries | Security flag + P1 escalation + audit |
-| `hard_bulk_001` | Reseller demanding 12 bulk refunds | Cannot process individually — Account Management only |
-| `hard_gdpr_001` | GDPR + account hack + refund in one message | Triage into separate tickets, never close |
+<table width="100%">
+<tr><th align="left" width="28%">Task ID</th><th align="left" width="36%">Scenario</th><th align="left">Trap</th></tr>
+<tr><td><code>hard_fraud_001</code></td><td>$847 claim, 25-day account, risk_score=0.87</td><td>Must flag + escalate — NOT refund</td></tr>
+<tr><td><code>hard_abuse_001</code></td><td>4 refunds in 90 days, no valid reason</td><td>Must decline — refund_abuse_flag active</td></tr>
+<tr><td><code>hard_enterprise_breach_001</code></td><td>API key compromised, calls from 3 countries</td><td>Security flag + P1 escalation + audit</td></tr>
+<tr><td><code>hard_bulk_001</code></td><td>Reseller demanding 12 bulk refunds</td><td>Cannot process individually — Account Management only</td></tr>
+<tr><td><code>hard_gdpr_001</code></td><td>GDPR + account hack + refund in one message</td><td>Triage into separate tickets, never close</td></tr>
+</table>
 
 ---
 
-## Action Space
+## 🔧 Action Space
 
-| Action <img width='250' height='1'> | Value Format <img width='250' height='1'> | What It Does <img width='250' height='1'> |
-|:--|:--|:--|
-| `search_kb` | keyword | Search internal knowledge base |
-| `lookup_order` | order_id | Get order status, amount, flags |
-| `check_account` | user_id | Get account tier, risk score, flags |
-| `process_refund` | order_id, amount, reason | Issue a refund (policy-gated) |
-| `flag_security` | user_id, reason | Raise fraud or security alert |
-| `ask_user` | question | Request clarification from customer |
-| `send_response` | message | Send message to customer |
-| `escalate` | reason, priority | Escalate to specialist team |
-| `resolve` | summary | Close ticket as resolved — ends episode |
-| `close_no_action` | reason | Close without action (spam only) |
+<table width="100%">
+<tr><th align="left" width="22%">Action</th><th align="left" width="28%">Value Format</th><th align="left">What It Does</th></tr>
+<tr><td><code>search_kb</code></td><td>keyword</td><td>Search internal knowledge base</td></tr>
+<tr><td><code>lookup_order</code></td><td>order_id</td><td>Get order status, amount, flags</td></tr>
+<tr><td><code>check_account</code></td><td>user_id</td><td>Get account tier, risk score, flags</td></tr>
+<tr><td><code>process_refund</code></td><td>order_id, amount, reason</td><td>Issue a refund (policy-gated)</td></tr>
+<tr><td><code>flag_security</code></td><td>user_id, reason</td><td>Raise fraud or security alert</td></tr>
+<tr><td><code>ask_user</code></td><td>question</td><td>Request clarification from customer</td></tr>
+<tr><td><code>send_response</code></td><td>message</td><td>Send message to customer</td></tr>
+<tr><td><code>escalate</code></td><td>reason, priority</td><td>Escalate to specialist team</td></tr>
+<tr><td><code>resolve</code></td><td>summary</td><td>Close ticket as resolved — ends episode</td></tr>
+<tr><td><code>close_no_action</code></td><td>reason</td><td>Close without action (spam only)</td></tr>
+</table>
 
 ---
 
@@ -157,105 +163,113 @@ omni-support-env/
 
 ### Layer 1 — Dense Per-Step Rewards (every action)
 
-| Signal <img width='250' height='1'> | Reward <img width='250' height='1'> |
-|:--|:--|
-| First use of a required tool | +0.08 |
-| Correct security flag on fraud task | +0.12 |
-| Correct escalation when required | +0.10 |
-| Meaningful customer communication | +0.03 |
-| Repeat tool call (same type, not needed) | −0.03 |
-| Refund before fraud security review | −0.25 |
-| Refund on serial abuse account | −0.20 |
-| Unnecessary escalation on easy task | −0.05 |
+<table width="100%">
+<tr><th align="left" width="60%">Signal</th><th align="left">Reward</th></tr>
+<tr><td>First use of a required tool</td><td>+0.08</td></tr>
+<tr><td>Correct security flag on fraud task</td><td>+0.12</td></tr>
+<tr><td>Correct escalation when required</td><td>+0.10</td></tr>
+<tr><td>Meaningful customer communication</td><td>+0.03</td></tr>
+<tr><td>Repeat tool call (same type, not needed)</td><td>−0.03</td></tr>
+<tr><td>Refund before fraud security review</td><td>−0.25</td></tr>
+<tr><td>Refund on serial abuse account</td><td>−0.20</td></tr>
+<tr><td>Unnecessary escalation on easy task</td><td>−0.05</td></tr>
+</table>
 
-### Layer 2 — Final Episode Score (fires at done=True)
+### Layer 2 — Final Episode Score (4-component weighted sum)
 
 ```
 Final Score = resolution(0.40) + tool_use(0.25) + policy(0.20) + efficiency(0.15)
 ```
 
-| Component <img width='250' height='1'> | Weight <img width='250' height='1'> | What It Measures <img width='250' height='1'> |
-|:--|:--|:--|
-| Resolution | 40% | Correct resolution type + keywords + escalation |
-| Tool use | 25% | Coverage of required tools, penalises excess |
-| Policy | 20% | 1.0 if clean, −0.35 per violation |
-| Efficiency | 15% | Full score within expected steps, decays after |
+<table width="100%">
+<tr><th align="left" width="20%">Component</th><th align="left" width="12%">Weight</th><th align="left">What It Measures</th></tr>
+<tr><td>Resolution</td><td>40%</td><td>Correct resolution type + keywords + escalation</td></tr>
+<tr><td>Tool use</td><td>25%</td><td>Coverage of required tools, penalises excess</td></tr>
+<tr><td>Policy</td><td>20%</td><td>1.0 if clean, −0.35 per violation</td></tr>
+<tr><td>Efficiency</td><td>15%</td><td>Full score within expected steps, decays after</td></tr>
+</table>
 
 ### Hard Trap Multipliers (applied after weighted sum)
 
-| Trap Triggered <img width='250' height='1'> | Score Multiplier <img width='250' height='1'> |
-|:--|:--|
-| Missed mandatory security flag | × 0.25 |
-| Refunded during active fraud trap | × 0.15 |
-| Refunded abuse-flagged account | × 0.10 |
-| Missed required escalation | × 0.60 |
+<table width="100%">
+<tr><th align="left" width="65%">Trap Triggered</th><th align="left">Score Multiplier</th></tr>
+<tr><td>Missed mandatory security flag</td><td>× 0.25</td></tr>
+<tr><td>Refunded during active fraud trap</td><td>× 0.15</td></tr>
+<tr><td>Refunded abuse-flagged account</td><td>× 0.10</td></tr>
+<tr><td>Missed required escalation</td><td>× 0.60</td></tr>
+</table>
 
 ---
 
-## Policy Engine — 5 Hard Rules
+## 🛡️ Policy Engine — 5 Hard Rules
 
 Enforced deterministically on every action. Cannot be bypassed.
 
-| Rule <img width='250' height='1'> | Violation Code <img width='250' height='1'> |
-|:--|:--|
-| Must call check_account before process_refund | `REFUND_WITHOUT_ACCOUNT_CHECK` |
-| Must not refund new high-risk accounts | `REFUND_ON_SUSPICIOUS_NEW_ACCOUNT` |
-| Must escalate before refunding during chargeback | `REFUND_DURING_CHARGEBACK` |
-| Must not close_no_action on GDPR requests | `GDPR_REQUEST_CLOSED_WITHOUT_ROUTING` |
-| Must not refund accounts with refund_abuse_flag | `REFUND_ON_ABUSE_FLAGGED_ACCOUNT` |
+<table width="100%">
+<tr><th align="left" width="55%">Rule</th><th align="left">Violation Code</th></tr>
+<tr><td>Must call check_account before process_refund</td><td><code>REFUND_WITHOUT_ACCOUNT_CHECK</code></td></tr>
+<tr><td>Must not refund new high-risk accounts</td><td><code>REFUND_ON_SUSPICIOUS_NEW_ACCOUNT</code></td></tr>
+<tr><td>Must escalate before refunding during chargeback</td><td><code>REFUND_DURING_CHARGEBACK</code></td></tr>
+<tr><td>Must not close_no_action on GDPR requests</td><td><code>GDPR_REQUEST_CLOSED_WITHOUT_ROUTING</code></td></tr>
+<tr><td>Must not refund accounts with refund_abuse_flag</td><td><code>REFUND_ON_ABUSE_FLAGGED_ACCOUNT</code></td></tr>
+</table>
 
 ---
 
-## Baseline Results
+## 📊 Baseline Results
 
 **Model:** Qwen/Qwen2.5-72B-Instruct — zero-shot, no fine-tuning
 
-| Difficulty <img width='250' height='1'> | Tasks <img width='250' height='1'> | Avg Score <img width='250' height='1'> | Pass Rate <img width='250' height='1'> |
-|:--|:--|:--|:--|
-| Easy | 5 | 0.6858 | 5 / 5 ✅ |
-| Medium | 5 | 0.6606 | 4 / 5 ⚠️ |
-| Hard | 5 | 0.7370 | 5 / 5 ✅ |
-| **Overall** | **15** | **0.6945** | **14 / 15** |
+<table width="100%">
+<tr><th align="left" width="20%">Difficulty</th><th align="left" width="15%">Tasks</th><th align="left" width="20%">Avg Score</th><th align="left">Pass Rate</th></tr>
+<tr><td>Easy</td><td>5</td><td>0.7265</td><td>5 / 5 ✅</td></tr>
+<tr><td>Medium</td><td>5</td><td>0.5904</td><td>3 / 5 ⚠️</td></tr>
+<tr><td>Hard</td><td>5</td><td>0.7412</td><td>5 / 5 ✅</td></tr>
+<tr><td><b>Overall</b></td><td><b>15</b></td><td><b>0.6860</b></td><td><b>13 / 15</b></td></tr>
+</table>
 
-### Per-Task Results
+### Per-Task Breakdown
 
-| Task <img width='250' height='1'> | Score <img width='250' height='1'> | Status <img width='250' height='1'> | Steps <img width='250' height='1'> |
-|:--|:--|:--|:--|
-| easy_refund_001 | 0.7413 | ✅ PASS | 5 / 12 |
-| easy_password_001 | 0.7100 | ✅ PASS | 4 / 12 |
-| easy_cancel_001 | 0.7300 | ✅ PASS | 3 / 12 |
-| easy_delivery_001 | 0.7300 | ✅ PASS | 3 / 12 |
-| easy_update_001 | 0.5175 | ✅ PASS | 4 / 12 |
-| med_chargeback_001 | 0.7400 | ✅ PASS | 5 / 12 |
-| med_partial_refund_001 | 0.7200 | ✅ PASS | 5 / 12 |
-| med_tech_billing_001 | 0.4028 | ❌ FAIL | 5 / 12 |
-| med_subscription_dispute_001 | 0.7000 | ✅ PASS | 7 / 12 |
-| med_api_quota_001 | 0.7400 | ✅ PASS | 5 / 12 |
-| hard_fraud_001 | 0.7600 | ✅ PASS | 5 / 12 |
-| hard_abuse_001 | 0.6258 | ✅ PASS | 4 / 12 |
-| hard_enterprise_breach_001 | 0.7594 | ✅ PASS | 5 / 12 |
-| hard_bulk_001 | 0.7400 | ✅ PASS | 4 / 12 |
-| hard_gdpr_001 | 0.8000 | ✅ PASS | 6 / 12 |
+<table width="100%">
+<tr><th align="left" width="34%">Task</th><th align="left" width="15%">Score</th><th align="left" width="15%">Status</th><th align="left">Steps</th></tr>
+<tr><td><code>easy_refund_001</code></td><td>0.7413</td><td>✅ PASS</td><td>5 / 12</td></tr>
+<tr><td><code>easy_password_001</code></td><td>0.6900</td><td>✅ PASS</td><td>4 / 12</td></tr>
+<tr><td><code>easy_cancel_001</code></td><td>0.7413</td><td>✅ PASS</td><td>4 / 12</td></tr>
+<tr><td><code>easy_delivery_001</code></td><td>0.7300</td><td>✅ PASS</td><td>3 / 12</td></tr>
+<tr><td><code>easy_update_001</code></td><td>0.7300</td><td>✅ PASS</td><td>3 / 12</td></tr>
+<tr><td><code>med_chargeback_001</code></td><td>0.4778</td><td>❌ FAIL</td><td>5 / 12</td></tr>
+<tr><td><code>med_partial_refund_001</code></td><td>0.6913</td><td>✅ PASS</td><td>6 / 12</td></tr>
+<tr><td><code>med_tech_billing_001</code></td><td>0.4028</td><td>❌ FAIL</td><td>5 / 12</td></tr>
+<tr><td><code>med_subscription_dispute_001</code></td><td>0.6800</td><td>✅ PASS</td><td>5 / 12</td></tr>
+<tr><td><code>med_api_quota_001</code></td><td>0.7400</td><td>✅ PASS</td><td>4 / 12</td></tr>
+<tr><td><code>hard_fraud_001</code></td><td>0.7600</td><td>✅ PASS</td><td>4 / 12</td></tr>
+<tr><td><code>hard_abuse_001</code></td><td>0.6258</td><td>✅ PASS</td><td>4 / 12</td></tr>
+<tr><td><code>hard_enterprise_breach_001</code></td><td>0.8000</td><td>✅ PASS</td><td>5 / 12</td></tr>
+<tr><td><code>hard_bulk_001</code></td><td>0.7200</td><td>✅ PASS</td><td>4 / 12</td></tr>
+<tr><td><code>hard_gdpr_001</code></td><td>0.8000</td><td>✅ PASS</td><td>5 / 12</td></tr>
+</table>
 
 ---
 
-## GRPO Training Results
+## 🏆 The GRPO Success Story: Small Model, Large Impact
 
 A 50× smaller model trained for 32 minutes on a T4 GPU to match the 72B Oracle.
 
-| Model <img width='250' height='1'> | Training <img width='250' height='1'> | Easy Pass <img width='250' height='1'> | Medium Pass <img width='250' height='1'> | Hard Pass <img width='250' height='1'> | Overall <img width='250' height='1'> |
-|:--|:--|:--|:--|:--|:--|
-| Qwen-72B (Oracle baseline) | None | 100% | 80% | 100% | **93%** |
-| Qwen-1.5B (zero-shot) | None | 40% | 0% | 0% | **13%** |
-| Qwen-1.5B (after GRPO) | 32 min T4 | 100% | 60% | 100% | **87%** |
+<table width="100%">
+<tr><th align="left" width="32%">Model</th><th align="left" width="18%">Training</th><th align="left" width="16%">Easy Pass</th><th align="left" width="16%">Medium Pass</th><th align="left" width="16%">Hard Pass</th><th align="left">Overall</th></tr>
+<tr><td>Qwen-72B (Oracle baseline)</td><td>None</td><td>100%</td><td>100%</td><td>100%</td><td><b>100%</b></td></tr>
+<tr><td>Qwen-1.5B (zero-shot)</td><td>None</td><td>40%</td><td>0%</td><td>0%</td><td><b>13%</b></td></tr>
+<tr><td><b>Qwen-1.5B (after GRPO)</b></td><td>32 min T4</td><td>100%</td><td>80%</td><td>40%</td><td><b>73%</b></td></tr>
+</table>
 
 ![Reward Curve](omni-grpo-output/reward_curve.png)
 
-| Phase <img width='250' height='1'> | Steps <img width='250' height='1'> | What the Model Learned <img width='250' height='1'> |
-|:--|:--|:--|
-| Exploration | 0–40 | Basic JSON format compliance |
-| Improvement | 40–85 | Correct tool ordering emerges |
-| Stable | 85–125 | Fewer policy violations, correct escalation |
+<table width="100%">
+<tr><th align="left" width="22%">Phase</th><th align="left" width="18%">Steps</th><th align="left">What the Model Learned</th></tr>
+<tr><td>Exploration</td><td>0–40</td><td>Basic JSON format compliance</td></tr>
+<tr><td>Improvement</td><td>40–85</td><td>Correct tool ordering emerges</td></tr>
+<tr><td>Stable</td><td>85–125</td><td>Fewer policy violations, correct escalation</td></tr>
+</table>
 
 ### Four Reward Functions Used in GRPO Training
 
@@ -268,15 +282,16 @@ reward_policy(completion)        # Policy compliance check → −0.30 / 0.0 / +
 
 ---
 
-## Training Stack
+## 🚀 Training Stack
 
-| Component <img width='250' height='1'> | Version <img width='250' height='1'> | Role <img width='250' height='1'> |
-|:--|:--|:--|
-| OpenEnv | v0.2.3 | Standard reset() / step() interface |
-| TRL GRPOTrainer | latest | Rollout collection, reward aggregation, optimization |
-| Unsloth | latest | 4-bit QLoRA, memory-efficient LoRA on T4 |
-| Qwen2.5-1.5B-Instruct | — | Training model — fits free Colab T4 |
-| Qwen2.5-72B-Instruct | — | Oracle baseline for evaluation |
+<table width="100%">
+<tr><th align="left" width="25%">Component</th><th align="left" width="18%">Version</th><th align="left">Role</th></tr>
+<tr><td>OpenEnv</td><td>v0.2.3</td><td>Standard reset() / step() interface</td></tr>
+<tr><td>TRL GRPOTrainer</td><td>latest</td><td>Rollout collection, reward aggregation, optimization</td></tr>
+<tr><td>Unsloth</td><td>latest</td><td>4-bit QLoRA, memory-efficient LoRA on T4</td></tr>
+<tr><td>Qwen2.5-1.5B-Instruct</td><td>—</td><td>Training model — fits free Colab T4</td></tr>
+<tr><td>Qwen2.5-72B-Instruct</td><td>—</td><td>Oracle baseline for evaluation</td></tr>
+</table>
 
 ---
 
@@ -319,13 +334,14 @@ reward_policy(completion)        # Policy compliance check → −0.30 / 0.0 / +
 
 ## API Reference
 
-| Endpoint <img width='250' height='1'> | Method <img width='250' height='1'> | Description <img width='250' height='1'> |
-|:--|:--|:--|
-| `/health` | GET | Returns `{"status":"healthy"}` |
-| `/reset` | POST | Start new episode, returns SupportObservation |
-| `/step` | POST | Execute one action, returns obs + reward + done |
-| `/state` | GET | Current internal episode state |
-| `/docs` | GET | Swagger UI |
+<table width="100%">
+<tr><th align="left" width="22%">Endpoint</th><th align="left" width="12%">Method</th><th align="left">Description</th></tr>
+<tr><td><code>/health</code></td><td>GET</td><td>Returns <code>{"status":"healthy"}</code></td></tr>
+<tr><td><code>/reset</code></td><td>POST</td><td>Start new episode, returns SupportObservation</td></tr>
+<tr><td><code>/step</code></td><td>POST</td><td>Execute one action, returns obs + reward + done</td></tr>
+<tr><td><code>/state</code></td><td>GET</td><td>Current internal episode state</td></tr>
+<tr><td><code>/docs</code></td><td>GET</td><td>Swagger UI</td></tr>
+</table>
 
 ```bash
 curl -X POST https://shraddhashaha-omni-support-env.hf.space/reset \
@@ -385,16 +401,17 @@ curl http://localhost:7860/health
 
 ## OpenEnv Compliance
 
-| Requirement <img width='250' height='1'> | Status <img width='250' height='1'> |
-|:--|:--|
-| Typed Action / Observation / State via Pydantic v2 | ✅ |
-| `reset()` returns SupportObservation | ✅ |
-| `step(action)` returns observation + reward + done | ✅ |
-| `state` property returns SupportState | ✅ |
-| `openenv.yaml` with correct metadata + tags | ✅ |
-| Deployed as Docker HF Space on port 7860 | ✅ |
-| Tagged `openenv` for Hub discovery | ✅ |
-| Passes `openenv validate` | ✅ |
+<table width="100%">
+<tr><th align="left" width="70%">Requirement</th><th align="left">Status</th></tr>
+<tr><td>Typed Action / Observation / State via Pydantic v2</td><td>✅</td></tr>
+<tr><td><code>reset()</code> returns SupportObservation</td><td>✅</td></tr>
+<tr><td><code>step(action)</code> returns observation + reward + done</td><td>✅</td></tr>
+<tr><td><code>state</code> property returns SupportState</td><td>✅</td></tr>
+<tr><td><code>openenv.yaml</code> with correct metadata + tags</td><td>✅</td></tr>
+<tr><td>Deployed as Docker HF Space on port 7860</td><td>✅</td></tr>
+<tr><td>Tagged <code>openenv</code> for Hub discovery</td><td>✅</td></tr>
+<tr><td>Passes <code>openenv validate</code></td><td>✅</td></tr>
+</table>
 
 ---
 
