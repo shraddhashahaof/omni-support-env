@@ -35,10 +35,8 @@ Thumbs.db
 # Jupyter
 .ipynb_checkpoints/
 
-# Local data / outputs
+# Local data (raw rollouts — not needed in repo)
 data/
-omni-grpo-output/
-outputs/
 
 # Git internals (usually unnecessary but harmless to exclude patterns elsewhere)
 *.tmp
