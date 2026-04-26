@@ -50,20 +50,20 @@ def main():
     # Verify auth
     try:
         user = api.whoami()
-        print(f"✓ Authenticated as: {user['name']}")
+        print(f"[OK] Authenticated as: {user['name']}")
     except Exception as e:
-        print(f"✗ Auth failed: {e}")
+        print(f"[ERROR] Auth failed: {e}")
         print("  Run: huggingface-cli login")
         return
 
     # Ensure space exists
     try:
         api.repo_info(repo_id=REPO_ID, repo_type=REPO_TYPE)
-        print(f"✓ Space {REPO_ID} found")
+        print(f"[OK] Space {REPO_ID} found")
     except Exception:
         print(f"  Space not found, creating {REPO_ID}...")
         api.create_repo(repo_id=REPO_ID, repo_type=REPO_TYPE, space_sdk="docker", exist_ok=True)
-        print(f"✓ Space {REPO_ID} created")
+        print(f"[OK] Space {REPO_ID} created")
 
     print(f"\nUploading from: {LOCAL_DIR}")
     print(f"Ignoring: venv/, __pycache__/, data/, .env, etc.")
@@ -77,11 +77,11 @@ def main():
             ignore_patterns=IGNORE_PATTERNS,
             commit_message="Deploy: source files only (no venv)",
         )
-        print(f"\n✅ Upload complete!")
+        print(f"\n[DONE] Upload complete!")
         print(f"   View your Space: https://huggingface.co/spaces/{REPO_ID}")
-        print(f"   Live demo:       https://shraddhashaha-omni-support-env.hf.space")
+        print(f"   Live demo:       https://{REPO_ID.replace('/', '-')}.hf.space")
     except Exception as e:
-        print(f"\n✗ Upload failed: {e}")
+        print(f"\n[ERROR] Upload failed: {e}")
 
 if __name__ == "__main__":
     main()
