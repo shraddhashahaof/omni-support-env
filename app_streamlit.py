@@ -10,8 +10,8 @@ st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
-html, body, [class*="css"], .stApp, .stMarkdown, .stRadio, .stSelectbox,
-.stButton, .stTextInput, .stForm, div, p, span, label, h1, h2, h3, h4 {
+html, body, .stApp, .stMarkdown, .stRadio, .stSelectbox,
+.stButton, .stTextInput, .stForm, div, p, label, h1, h2, h3, h4 {
     font-family: 'Inter', sans-serif !important;
 }
 .stApp { background: #0d1117; color: #e6edf3; }
@@ -101,14 +101,14 @@ ul[role="listbox"] li { color: #ffffff !important; }
 .stat-val   { color: #e6edf3; font-weight: 500; text-align: right; max-width: 60%; }
 
 /* ── Tables ── */
-table { width: 100%; border-collapse: collapse; font-size: 0.83rem; }
+table { width: 100%; border-collapse: collapse; font-size: 0.83rem; table-layout: fixed; }
 th {
-    text-align: left; padding: 0.55rem 0.75rem;
+    text-align: left; padding: 0.65rem 0.75rem;
     font-size: 0.72rem; font-weight: 600; color: #8b949e;
     text-transform: uppercase; letter-spacing: 0.05em;
     border-bottom: 1px solid #30363d; background: #0d1117;
 }
-td { padding: 0.6rem 0.75rem; color: #e6edf3; border-bottom: 1px solid #21262d; vertical-align: middle; }
+td { padding: 0.75rem 0.75rem; color: #e6edf3; border-bottom: 1px solid #21262d; vertical-align: middle; word-wrap: break-word; }
 tr:last-child td { border-bottom: none; }
 tr:hover td { background: rgba(48,54,61,0.25); }
 
@@ -197,10 +197,33 @@ details.qa-item summary:hover { background: #1c2128; }
 .qa-warn { color: #f85149; font-weight: 600; }
 .qa-good { color: #3fb950; font-weight: 600; }
 
-/* Equal height metric cards */
-.metric-card-inner {
-    display: flex; flex-direction: column; justify-content: center;
-    text-align: center; height: 100%; min-height: 130px;
+/* ── Evaluation Log Viewer ── */
+.log-container {
+    background: #010409;
+    border: 1px solid #30363d;
+    border-radius: 6px;
+    padding: 1rem;
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 0.75rem !important;
+    color: #d1d7dd;
+    line-height: 1.5;
+    overflow-x: auto;
+    white-space: pre;
+    margin-bottom: 1rem;
+}
+
+/* ── Download Button Styling ── */
+.stDownloadButton button {
+    background-color: #1f6feb !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    border: 1px solid #388bfd !important;
+    padding: 0.75rem 1.5rem !important;
+    transition: background-color 0.2s !important;
+}
+.stDownloadButton button:hover {
+    background-color: #388bfd !important;
+    border-color: #58a6ff !important;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -681,17 +704,17 @@ elif page == "Results":
     log_file = "outputs/evaluation_log.txt"
     if os.path.exists(log_file):
         with open(log_file, "r", encoding="utf-8", errors="ignore") as f:
-            log_content = f.read()
+            log_content = strip_ansi(f.read())
         
-        st.markdown('<p style="font-size:0.8rem;color:#8b949e;margin-top:1rem">Detailed execution logs for all 15 tasks:</p>', unsafe_allow_html=True)
-        with st.expander("📄 View Full Evaluation Log"):
-            st.code(log_content, language="text")
-            
+        st.markdown('<p style="font-size:0.8rem;color:#8b949e;margin-top:1.5rem;margin-bottom:1rem">The complete evaluation trace for all 15 tasks is available for download:</p>', unsafe_allow_html=True)
+        
         st.download_button(
-            label="📥 Download Evaluation Log",
+            label="📥 Download Full Evaluation Log",
             data=log_content,
             file_name="evaluation_log.txt",
             mime="text/plain",
+            use_container_width=True,
+            key="download_log_btn"
         )
     st.markdown('</div>', unsafe_allow_html=True)
 
