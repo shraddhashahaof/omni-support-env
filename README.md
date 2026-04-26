@@ -27,8 +27,7 @@ pinned: false
 | **HF Space** | [shraddhashaha/omni-support-env](https://huggingface.co/spaces/shraddhashaha/omni-support-env) |
 | **Live Demo** | [omni-support-env.hf.space](https://shraddhashaha-omni-support-env.hf.space) |
 | **GitHub** | [shraddhashahaof/omni-support-env](https://github.com/shraddhashahaof/omni-support-env) |
-| **Video / Pitch** | [YouTube — 2 min demo](#) |
-| **Blog Post** | [HuggingFace Blog](#) |
+| **Video / Pitch** | [YouTube — demo](https://youtu.be/xjCJhi15Tv8) |
 | **Colab Notebook** | [omni_support_training.ipynb](omni_support_training.ipynb) |
 | **Baseline Model** | Qwen/Qwen2.5-72B-Instruct |
 | **Training Model** | Qwen/Qwen2.5-1.5B-Instruct (GRPO, T4 GPU, 32 min) |
