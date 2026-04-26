@@ -16,7 +16,7 @@ pinned: false
 
 ## Hackathon Submission
 
-<table style="width:100%;border-collapse:collapse;table-layout:fixed">
+<table width="100%" style="width:100%;border-collapse:collapse;table-layout:fixed">
 <tr><th style="text-align:left;padding:8px;border:1px solid #d0d7de;background:#f6f8fa;word-wrap:break-word" align="left" width="22%">Field</th><th style="text-align:left;padding:8px;border:1px solid #d0d7de;background:#f6f8fa;word-wrap:break-word" align="left">Detail</th></tr>
 <tr><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top"><b>Hackathon</b></td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">Meta PyTorch × Scaler OpenEnv Hackathon — India 2026</td></tr>
 <tr><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top"><b>Round</b></td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">Round 2 (Onsite)</td></tr>
@@ -50,7 +50,7 @@ Every company employs thousands of support agents to handle billing disputes, fr
 
 The agent builds and updates an internal world model every step:
 
-<table style="width:100%;border-collapse:collapse;table-layout:fixed">
+<table width="100%" style="width:100%;border-collapse:collapse;table-layout:fixed">
 <tr><th style="text-align:left;padding:8px;border:1px solid #d0d7de;background:#f6f8fa;word-wrap:break-word" align="left" width="25%">State Dimension</th><th style="text-align:left;padding:8px;border:1px solid #d0d7de;background:#f6f8fa;word-wrap:break-word" align="left">What the agent tracks</th></tr>
 <tr><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">Customer trust</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">Account age, tier, prior flags, risk score</td></tr>
 <tr><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">Refund eligibility</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">Order status, purchase date, abuse history</td></tr>
@@ -108,7 +108,7 @@ omni-support-env/
 
 ### Easy (5) — Single-intent, 1–2 tools, clear resolution
 
-<table style="width:100%;border-collapse:collapse;table-layout:fixed">
+<table width="100%" style="width:100%;border-collapse:collapse;table-layout:fixed">
 <tr><th style="text-align:left;padding:8px;border:1px solid #d0d7de;background:#f6f8fa;word-wrap:break-word" align="left" width="28%">Task ID</th><th style="text-align:left;padding:8px;border:1px solid #d0d7de;background:#f6f8fa;word-wrap:break-word" align="left" width="36%">Scenario</th><th style="text-align:left;padding:8px;border:1px solid #d0d7de;background:#f6f8fa;word-wrap:break-word" align="left">Required Tools</th></tr>
 <tr><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top"><code>easy_refund_001</code></td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">Duplicate charge refund</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">check_account, lookup_order, process_refund</td></tr>
 <tr><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top"><code>easy_password_001</code></td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">Account locked after failed logins</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">check_account, search_kb</td></tr>
@@ -119,7 +119,7 @@ omni-support-env/
 
 ### Medium (5) — Multi-intent, 3+ tools, policy judgment required
 
-<table style="width:100%;border-collapse:collapse;table-layout:fixed">
+<table width="100%" style="width:100%;border-collapse:collapse;table-layout:fixed">
 <tr><th style="text-align:left;padding:8px;border:1px solid #d0d7de;background:#f6f8fa;word-wrap:break-word" align="left" width="28%">Task ID</th><th style="text-align:left;padding:8px;border:1px solid #d0d7de;background:#f6f8fa;word-wrap:break-word" align="left" width="36%">Scenario</th><th style="text-align:left;padding:8px;border:1px solid #d0d7de;background:#f6f8fa;word-wrap:break-word" align="left">Key Challenge</th></tr>
 <tr><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top"><code>med_chargeback_001</code></td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">Chargeback filed + refund demanded</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">Must escalate first — refunding is a policy violation</td></tr>
 <tr><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top"><code>med_partial_refund_001</code></td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">Damaged goods, wants partial refund</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">Photo evidence policy must be cited</td></tr>
@@ -130,7 +130,7 @@ omni-support-env/
 
 ### Hard (5) — Policy traps, compliance, adversarial inputs
 
-<table style="width:100%;border-collapse:collapse;table-layout:fixed">
+<table width="100%" style="width:100%;border-collapse:collapse;table-layout:fixed">
 <tr><th style="text-align:left;padding:8px;border:1px solid #d0d7de;background:#f6f8fa;word-wrap:break-word" align="left" width="28%">Task ID</th><th style="text-align:left;padding:8px;border:1px solid #d0d7de;background:#f6f8fa;word-wrap:break-word" align="left" width="36%">Scenario</th><th style="text-align:left;padding:8px;border:1px solid #d0d7de;background:#f6f8fa;word-wrap:break-word" align="left">Trap</th></tr>
 <tr><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top"><code>hard_fraud_001</code></td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">$847 claim, 25-day account, risk_score=0.87</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">Must flag + escalate — NOT refund</td></tr>
 <tr><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top"><code>hard_abuse_001</code></td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">4 refunds in 90 days, no valid reason</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">Must decline — refund_abuse_flag active</td></tr>
@@ -143,7 +143,7 @@ omni-support-env/
 
 ## 🔧 Action Space
 
-<table style="width:100%;border-collapse:collapse;table-layout:fixed">
+<table width="100%" style="width:100%;border-collapse:collapse;table-layout:fixed">
 <tr><th style="text-align:left;padding:8px;border:1px solid #d0d7de;background:#f6f8fa;word-wrap:break-word" align="left" width="22%">Action</th><th style="text-align:left;padding:8px;border:1px solid #d0d7de;background:#f6f8fa;word-wrap:break-word" align="left" width="28%">Value Format</th><th style="text-align:left;padding:8px;border:1px solid #d0d7de;background:#f6f8fa;word-wrap:break-word" align="left">What It Does</th></tr>
 <tr><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top"><code>search_kb</code></td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">keyword</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">Search internal knowledge base</td></tr>
 <tr><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top"><code>lookup_order</code></td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">order_id</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">Get order status, amount, flags</td></tr>
@@ -163,7 +163,7 @@ omni-support-env/
 
 ### Layer 1 — Dense Per-Step Rewards (every action)
 
-<table style="width:100%;border-collapse:collapse;table-layout:fixed">
+<table width="100%" style="width:100%;border-collapse:collapse;table-layout:fixed">
 <tr><th style="text-align:left;padding:8px;border:1px solid #d0d7de;background:#f6f8fa;word-wrap:break-word" align="left" width="60%">Signal</th><th style="text-align:left;padding:8px;border:1px solid #d0d7de;background:#f6f8fa;word-wrap:break-word" align="left">Reward</th></tr>
 <tr><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">First use of a required tool</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">+0.08</td></tr>
 <tr><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">Correct security flag on fraud task</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">+0.12</td></tr>
@@ -181,7 +181,7 @@ omni-support-env/
 Final Score = resolution(0.40) + tool_use(0.25) + policy(0.20) + efficiency(0.15)
 ```
 
-<table style="width:100%;border-collapse:collapse;table-layout:fixed">
+<table width="100%" style="width:100%;border-collapse:collapse;table-layout:fixed">
 <tr><th style="text-align:left;padding:8px;border:1px solid #d0d7de;background:#f6f8fa;word-wrap:break-word" align="left" width="20%">Component</th><th style="text-align:left;padding:8px;border:1px solid #d0d7de;background:#f6f8fa;word-wrap:break-word" align="left" width="12%">Weight</th><th style="text-align:left;padding:8px;border:1px solid #d0d7de;background:#f6f8fa;word-wrap:break-word" align="left">What It Measures</th></tr>
 <tr><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">Resolution</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">40%</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">Correct resolution type + keywords + escalation</td></tr>
 <tr><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">Tool use</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">25%</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">Coverage of required tools, penalises excess</td></tr>
@@ -191,7 +191,7 @@ Final Score = resolution(0.40) + tool_use(0.25) + policy(0.20) + efficiency(0.15
 
 ### Hard Trap Multipliers (applied after weighted sum)
 
-<table style="width:100%;border-collapse:collapse;table-layout:fixed">
+<table width="100%" style="width:100%;border-collapse:collapse;table-layout:fixed">
 <tr><th style="text-align:left;padding:8px;border:1px solid #d0d7de;background:#f6f8fa;word-wrap:break-word" align="left" width="65%">Trap Triggered</th><th style="text-align:left;padding:8px;border:1px solid #d0d7de;background:#f6f8fa;word-wrap:break-word" align="left">Score Multiplier</th></tr>
 <tr><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">Missed mandatory security flag</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">× 0.25</td></tr>
 <tr><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">Refunded during active fraud trap</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">× 0.15</td></tr>
@@ -205,7 +205,7 @@ Final Score = resolution(0.40) + tool_use(0.25) + policy(0.20) + efficiency(0.15
 
 Enforced deterministically on every action. Cannot be bypassed.
 
-<table style="width:100%;border-collapse:collapse;table-layout:fixed">
+<table width="100%" style="width:100%;border-collapse:collapse;table-layout:fixed">
 <tr><th style="text-align:left;padding:8px;border:1px solid #d0d7de;background:#f6f8fa;word-wrap:break-word" align="left" width="55%">Rule</th><th style="text-align:left;padding:8px;border:1px solid #d0d7de;background:#f6f8fa;word-wrap:break-word" align="left">Violation Code</th></tr>
 <tr><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">Must call check_account before process_refund</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top"><code>REFUND_WITHOUT_ACCOUNT_CHECK</code></td></tr>
 <tr><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">Must not refund new high-risk accounts</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top"><code>REFUND_ON_SUSPICIOUS_NEW_ACCOUNT</code></td></tr>
@@ -220,32 +220,32 @@ Enforced deterministically on every action. Cannot be bypassed.
 
 **Model:** Qwen/Qwen2.5-72B-Instruct — zero-shot, no fine-tuning
 
-<table style="width:100%;border-collapse:collapse;table-layout:fixed">
+<table width="100%" style="width:100%;border-collapse:collapse;table-layout:fixed">
 <tr><th style="text-align:left;padding:8px;border:1px solid #d0d7de;background:#f6f8fa;word-wrap:break-word" align="left" width="20%">Difficulty</th><th style="text-align:left;padding:8px;border:1px solid #d0d7de;background:#f6f8fa;word-wrap:break-word" align="left" width="15%">Tasks</th><th style="text-align:left;padding:8px;border:1px solid #d0d7de;background:#f6f8fa;word-wrap:break-word" align="left" width="20%">Avg Score</th><th style="text-align:left;padding:8px;border:1px solid #d0d7de;background:#f6f8fa;word-wrap:break-word" align="left">Pass Rate</th></tr>
-<tr><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">Easy</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">5</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">0.7265</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">5 / 5 ✅</td></tr>
-<tr><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">Medium</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">5</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">0.5904</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">3 / 5 ⚠️</td></tr>
-<tr><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">Hard</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">5</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">0.7412</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">5 / 5 ✅</td></tr>
-<tr><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top"><b>Overall</b></td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top"><b>15</b></td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top"><b>0.6860</b></td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top"><b>13 / 15</b></td></tr>
+<tr><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">Easy</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">5</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">0.6858</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">5 / 5 ✅</td></tr>
+<tr><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">Medium</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">5</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">0.6606</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">4 / 5 ⚠️</td></tr>
+<tr><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">Hard</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">5</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">0.7370</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">5 / 5 ✅</td></tr>
+<tr><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top"><b>Overall</b></td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top"><b>15</b></td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top"><b>0.6945</b></td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top"><b>14 / 15</b></td></tr>
 </table>
 
 ### Per-Task Breakdown
 
-<table style="width:100%;border-collapse:collapse;table-layout:fixed">
-<tr><th style="text-align:left;padding:8px;border:1px solid #d0d7de;background:#f6f8fa;word-wrap:break-word" align="left" width="34%">Task</th><th style="text-align:left;padding:8px;border:1px solid #d0d7de;background:#f6f8fa;word-wrap:break-word" align="left" width="15%">Score</th><th style="text-align:left;padding:8px;border:1px solid #d0d7de;background:#f6f8fa;word-wrap:break-word" align="left" width="15%">Status</th><th style="text-align:left;padding:8px;border:1px solid #d0d7de;background:#f6f8fa;word-wrap:break-word" align="left">Steps</th></tr>
+<table width="100%" style="width:100%;border-collapse:collapse;table-layout:fixed">
+<tr><th style="text-align:left;padding:8px;border:1px solid #d0d7de;background:#f6f8fa;word-wrap:break-word" align="left" width="40%">Task</th><th style="text-align:left;padding:8px;border:1px solid #d0d7de;background:#f6f8fa;word-wrap:break-word" align="left" width="15%">Score</th><th style="text-align:left;padding:8px;border:1px solid #d0d7de;background:#f6f8fa;word-wrap:break-word" align="left" width="15%">Status</th><th style="text-align:left;padding:8px;border:1px solid #d0d7de;background:#f6f8fa;word-wrap:break-word" align="left">Steps</th></tr>
 <tr><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top"><code>easy_refund_001</code></td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">0.7413</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">✅ PASS</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">5 / 12</td></tr>
-<tr><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top"><code>easy_password_001</code></td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">0.6900</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">✅ PASS</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">4 / 12</td></tr>
-<tr><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top"><code>easy_cancel_001</code></td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">0.7413</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">✅ PASS</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">4 / 12</td></tr>
+<tr><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top"><code>easy_password_001</code></td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">0.7100</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">✅ PASS</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">4 / 12</td></tr>
+<tr><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top"><code>easy_cancel_001</code></td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">0.7300</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">✅ PASS</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">4 / 12</td></tr>
 <tr><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top"><code>easy_delivery_001</code></td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">0.7300</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">✅ PASS</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">3 / 12</td></tr>
-<tr><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top"><code>easy_update_001</code></td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">0.7300</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">✅ PASS</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">3 / 12</td></tr>
-<tr><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top"><code>med_chargeback_001</code></td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">0.4778</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">❌ FAIL</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">5 / 12</td></tr>
-<tr><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top"><code>med_partial_refund_001</code></td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">0.6913</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">✅ PASS</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">6 / 12</td></tr>
+<tr><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top"><code>easy_update_001</code></td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">0.5175</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">✅ PASS</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">3 / 12</td></tr>
+<tr><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top"><code>med_chargeback_001</code></td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">0.7400</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">✅ PASS</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">5 / 12</td></tr>
+<tr><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top"><code>med_partial_refund_001</code></td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">0.7200</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">✅ PASS</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">6 / 12</td></tr>
 <tr><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top"><code>med_tech_billing_001</code></td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">0.4028</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">❌ FAIL</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">5 / 12</td></tr>
-<tr><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top"><code>med_subscription_dispute_001</code></td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">0.6800</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">✅ PASS</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">5 / 12</td></tr>
+<tr><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top"><code>med_subscription_dispute_001</code></td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">0.7000</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">✅ PASS</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">5 / 12</td></tr>
 <tr><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top"><code>med_api_quota_001</code></td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">0.7400</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">✅ PASS</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">4 / 12</td></tr>
 <tr><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top"><code>hard_fraud_001</code></td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">0.7600</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">✅ PASS</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">4 / 12</td></tr>
 <tr><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top"><code>hard_abuse_001</code></td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">0.6258</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">✅ PASS</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">4 / 12</td></tr>
-<tr><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top"><code>hard_enterprise_breach_001</code></td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">0.8000</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">✅ PASS</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">5 / 12</td></tr>
-<tr><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top"><code>hard_bulk_001</code></td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">0.7200</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">✅ PASS</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">4 / 12</td></tr>
+<tr><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top"><code>hard_enterprise_breach_001</code></td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">0.7594</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">✅ PASS</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">5 / 12</td></tr>
+<tr><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top"><code>hard_bulk_001</code></td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">0.7400</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">✅ PASS</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">4 / 12</td></tr>
 <tr><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top"><code>hard_gdpr_001</code></td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">0.8000</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">✅ PASS</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">5 / 12</td></tr>
 </table>
 
@@ -255,16 +255,16 @@ Enforced deterministically on every action. Cannot be bypassed.
 
 A 50× smaller model trained for 32 minutes on a T4 GPU to match the 72B Oracle.
 
-<table style="width:100%;border-collapse:collapse;table-layout:fixed">
-<tr><th style="text-align:left;padding:8px;border:1px solid #d0d7de;background:#f6f8fa;word-wrap:break-word" align="left" width="32%">Model</th><th style="text-align:left;padding:8px;border:1px solid #d0d7de;background:#f6f8fa;word-wrap:break-word" align="left" width="18%">Training</th><th style="text-align:left;padding:8px;border:1px solid #d0d7de;background:#f6f8fa;word-wrap:break-word" align="left" width="16%">Easy Pass</th><th style="text-align:left;padding:8px;border:1px solid #d0d7de;background:#f6f8fa;word-wrap:break-word" align="left" width="16%">Medium Pass</th><th style="text-align:left;padding:8px;border:1px solid #d0d7de;background:#f6f8fa;word-wrap:break-word" align="left" width="16%">Hard Pass</th><th style="text-align:left;padding:8px;border:1px solid #d0d7de;background:#f6f8fa;word-wrap:break-word" align="left">Overall</th></tr>
-<tr><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">Qwen-72B (Oracle baseline)</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">None</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">100%</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">100%</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">100%</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top"><b>100%</b></td></tr>
+<table width="100%" style="width:100%;border-collapse:collapse;table-layout:fixed">
+<tr><th style="text-align:left;padding:8px;border:1px solid #d0d7de;background:#f6f8fa;word-wrap:break-word" align="left" width="30%">Model</th><th style="text-align:left;padding:8px;border:1px solid #d0d7de;background:#f6f8fa;word-wrap:break-word" align="left" width="16%">Training</th><th style="text-align:left;padding:8px;border:1px solid #d0d7de;background:#f6f8fa;word-wrap:break-word" align="left" width="12%">Easy Pass</th><th style="text-align:left;padding:8px;border:1px solid #d0d7de;background:#f6f8fa;word-wrap:break-word" align="left" width="14%">Medium Pass</th><th style="text-align:left;padding:8px;border:1px solid #d0d7de;background:#f6f8fa;word-wrap:break-word" align="left" width="12%">Hard Pass</th><th style="text-align:left;padding:8px;border:1px solid #d0d7de;background:#f6f8fa;word-wrap:break-word" align="left">Overall</th></tr>
+<tr><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">Qwen-72B (Oracle baseline)</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">None</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">100%</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">80%</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">100%</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top"><b>93%</b></td></tr>
 <tr><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">Qwen-1.5B (zero-shot)</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">None</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">40%</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">0%</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">0%</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top"><b>13%</b></td></tr>
-<tr><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top"><b>Qwen-1.5B (after GRPO)</b></td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">32 min T4</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">100%</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">80%</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">40%</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top"><b>73%</b></td></tr>
+<tr><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top"><b>Qwen-1.5B (after GRPO)</b></td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">32 min T4</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">100%</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">80%</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">80%</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top"><b>87%</b></td></tr>
 </table>
 
 ![Reward Curve](omni-grpo-output/reward_curve.png)
 
-<table style="width:100%;border-collapse:collapse;table-layout:fixed">
+<table width="100%" style="width:100%;border-collapse:collapse;table-layout:fixed">
 <tr><th style="text-align:left;padding:8px;border:1px solid #d0d7de;background:#f6f8fa;word-wrap:break-word" align="left" width="22%">Phase</th><th style="text-align:left;padding:8px;border:1px solid #d0d7de;background:#f6f8fa;word-wrap:break-word" align="left" width="18%">Steps</th><th style="text-align:left;padding:8px;border:1px solid #d0d7de;background:#f6f8fa;word-wrap:break-word" align="left">What the Model Learned</th></tr>
 <tr><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">Exploration</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">0–40</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">Basic JSON format compliance</td></tr>
 <tr><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">Improvement</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">40–85</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">Correct tool ordering emerges</td></tr>
@@ -284,7 +284,7 @@ reward_policy(completion)        # Policy compliance check → −0.30 / 0.0 / +
 
 ## 🚀 Training Stack
 
-<table style="width:100%;border-collapse:collapse;table-layout:fixed">
+<table width="100%" style="width:100%;border-collapse:collapse;table-layout:fixed">
 <tr><th style="text-align:left;padding:8px;border:1px solid #d0d7de;background:#f6f8fa;word-wrap:break-word" align="left" width="25%">Component</th><th style="text-align:left;padding:8px;border:1px solid #d0d7de;background:#f6f8fa;word-wrap:break-word" align="left" width="18%">Version</th><th style="text-align:left;padding:8px;border:1px solid #d0d7de;background:#f6f8fa;word-wrap:break-word" align="left">Role</th></tr>
 <tr><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">OpenEnv</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">v0.2.3</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">Standard reset() / step() interface</td></tr>
 <tr><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">TRL GRPOTrainer</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">latest</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">Rollout collection, reward aggregation, optimization</td></tr>
@@ -295,46 +295,21 @@ reward_policy(completion)        # Policy compliance check → −0.30 / 0.0 / +
 
 ---
 
-## Per-Task Episode Traces
+## Per-Task Episode Traces & Logs
 
-<details>
-<summary>Easy Tasks</summary>
+The consolidated results for all 15 tasks, including full multi-agent reasoning traces, are available in the evaluation summary image and the detailed execution log.
 
-![easy_refund_001](outputs/easy_refund_001.png)
-![easy_password_001](outputs/easy_password_001.png)
-![easy_cancel_001](outputs/easy_cancel_001.png)
-![easy_delivery_001](outputs/easy_delivery_001.png)
-![easy_update_001](outputs/easy_update_001.png)
+![Evaluation Results](outputs/evaluation_results.jpg)
 
-</details>
+> [!TIP]
+> You can find the full step-by-step reasoning logs in [evaluation_log.txt](outputs/evaluation_log.txt).
 
-<details>
-<summary>Medium Tasks</summary>
-
-![med_chargeback_001](outputs/med_chargeback_001.png)
-![med_partial_refund_001](outputs/med_partial_refund_001.png)
-![med_tech_billing_001](outputs/med_tech_billing_001.png)
-![med_subscription_dispute_001](outputs/med_subscription_dispute_001.png)
-![med_api_quota_001](outputs/med_api_quota_001.png)
-
-</details>
-
-<details>
-<summary>Hard Tasks</summary>
-
-![hard_fraud_001](outputs/hard_fraud_001.png)
-![hard_abuse_001](outputs/hard_abuse_001.png)
-![hard_enterprise_breach_001](outputs/hard_enterprise_breach_001.png)
-![hard_bulk_001](outputs/hard_bulk_001.png)
-![hard_gdpr_001](outputs/hard_gdpr_001.png)
-
-</details>
 
 ---
 
 ## API Reference
 
-<table style="width:100%;border-collapse:collapse;table-layout:fixed">
+<table width="100%" style="width:100%;border-collapse:collapse;table-layout:fixed">
 <tr><th style="text-align:left;padding:8px;border:1px solid #d0d7de;background:#f6f8fa;word-wrap:break-word" align="left" width="22%">Endpoint</th><th style="text-align:left;padding:8px;border:1px solid #d0d7de;background:#f6f8fa;word-wrap:break-word" align="left" width="12%">Method</th><th style="text-align:left;padding:8px;border:1px solid #d0d7de;background:#f6f8fa;word-wrap:break-word" align="left">Description</th></tr>
 <tr><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top"><code>/health</code></td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">GET</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">Returns <code>{"status":"healthy"}</code></td></tr>
 <tr><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top"><code>/reset</code></td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">POST</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">Start new episode, returns SupportObservation</td></tr>
@@ -401,7 +376,7 @@ curl http://localhost:7860/health
 
 ## OpenEnv Compliance
 
-<table style="width:100%;border-collapse:collapse;table-layout:fixed">
+<table width="100%" style="width:100%;border-collapse:collapse;table-layout:fixed">
 <tr><th style="text-align:left;padding:8px;border:1px solid #d0d7de;background:#f6f8fa;word-wrap:break-word" align="left" width="70%">Requirement</th><th style="text-align:left;padding:8px;border:1px solid #d0d7de;background:#f6f8fa;word-wrap:break-word" align="left">Status</th></tr>
 <tr><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">Typed Action / Observation / State via Pydantic v2</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">✅</td></tr>
 <tr><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top"><code>reset()</code> returns SupportObservation</td><td style="padding:8px;border:1px solid #d0d7de;word-wrap:break-word;vertical-align:top">✅</td></tr>

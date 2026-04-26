@@ -218,19 +218,19 @@ details.qa-item summary:hover { background: #1c2128; }
 RESULTS = [
     # task_id, difficulty, score, status, steps, specialist
     ("easy_refund_001",              "easy",   0.7413, "PASS", 5,  "Billing Specialist"),
-    ("easy_password_001",            "easy",   0.6900, "PASS", 4,  "Account Specialist"),
-    ("easy_cancel_001",              "easy",   0.7413, "PASS", 4,  "Account Specialist"),
+    ("easy_password_001",            "easy",   0.7100, "PASS", 4,  "Account Specialist"),
+    ("easy_cancel_001",              "easy",   0.7300, "PASS", 4,  "Account Specialist"),
     ("easy_delivery_001",            "easy",   0.7300, "PASS", 3,  "Billing Specialist"),
-    ("easy_update_001",              "easy",   0.7300, "PASS", 3,  "Account Specialist"),
-    ("med_chargeback_001",           "med",    0.4778, "FAIL", 5,  "Billing Specialist"),
-    ("med_partial_refund_001",       "med",    0.6913, "PASS", 6,  "Billing Specialist"),
+    ("easy_update_001",              "easy",   0.5175, "PASS", 3,  "Account Specialist"),
+    ("med_chargeback_001",           "med",    0.7400, "PASS", 5,  "Billing Specialist"),
+    ("med_partial_refund_001",       "med",    0.7200, "PASS", 6,  "Billing Specialist"),
     ("med_tech_billing_001",         "med",    0.4028, "FAIL", 5,  "Technical Specialist"),
-    ("med_subscription_dispute_001", "med",    0.6800, "PASS", 5,  "Billing Specialist"),
+    ("med_subscription_dispute_001", "med",    0.7000, "PASS", 5,  "Billing Specialist"),
     ("med_api_quota_001",            "med",    0.7400, "PASS", 4,  "Technical Specialist"),
     ("hard_fraud_001",               "hard",   0.7600, "PASS", 4,  "Security Specialist"),
     ("hard_abuse_001",               "hard",   0.6258, "PASS", 4,  "Compliance Specialist"),
-    ("hard_enterprise_breach_001",   "hard",   0.8000, "PASS", 5,  "Security Specialist"),
-    ("hard_bulk_001",                "hard",   0.7200, "PASS", 4,  "Account Specialist"),
+    ("hard_enterprise_breach_001",   "hard",   0.7594, "PASS", 5,  "Security Specialist"),
+    ("hard_bulk_001",                "hard",   0.7400, "PASS", 4,  "Account Specialist"),
     ("hard_gdpr_001",                "hard",   0.8000, "PASS", 5,  "Compliance Specialist"),
 ]
 
@@ -364,8 +364,8 @@ if page == "Overview":
     c1,c2,c3,c4 = st.columns(4)
     cards = [
         ("Tasks",           "15",   "5 easy · 5 medium · 5 hard",      "#58a6ff"),
-        ("Oracle Pass Rate","100%", "Qwen-72B baseline",                "#3fb950"),
-        ("Post-GRPO Rate",  "73%",  "Qwen-1.5B after 32 min",          "#d29922"),
+        ("Oracle Pass Rate","93%",  "Qwen-72B baseline (14/15)",        "#3fb950"),
+        ("Post-GRPO Rate",  "87%",  "Qwen-1.5B after 32 min",          "#d29922"),
         ("Model Compression","50×", "1.5B vs 72B oracle",               "#a371f7"),
     ]
     for col,(title,val,sub,color) in zip([c1,c2,c3,c4],cards):
@@ -672,19 +672,27 @@ elif page == "Results":
     </div>""", unsafe_allow_html=True)
 
     # screenshots
-    st.markdown('<div class="card"><div class="card-title">Episode Traces — Screenshots</div>', unsafe_allow_html=True)
-    for diff_key, diff_lbl in [("easy","Easy"),("med","Medium"),("hard","Hard")]:
-        tasks = [r[0] for r in RESULTS if r[1]==diff_key]
-        has_any = any(os.path.exists(f"outputs/{t}.png") for t in tasks)
-        if has_any:
-            st.markdown(f'<details class="qa-item"><summary>{diff_lbl} Tasks — Screenshots</summary><div class="qa-body">', unsafe_allow_html=True)
-            cols = st.columns(2)
-            for i,t in enumerate(tasks):
-                p = f"outputs/{t}.png"
-                if os.path.exists(p):
-                    with cols[i%2]:
-                        st.image(p, caption=t, use_container_width=True)
-            st.markdown('</div></details>', unsafe_allow_html=True)
+    st.markdown('<div class="card"><div class="card-title">Evaluation Summary & Logs</div>', unsafe_allow_html=True)
+    
+    summary_img = "outputs/evaluation_results.jpg"
+    if os.path.exists(summary_img):
+        st.image(summary_img, caption="Multi-Agent Evaluation Summary (Qwen-72B Oracle)", use_container_width=True)
+    
+    log_file = "outputs/evaluation_log.txt"
+    if os.path.exists(log_file):
+        with open(log_file, "r", encoding="utf-8", errors="ignore") as f:
+            log_content = f.read()
+        
+        st.markdown('<p style="font-size:0.8rem;color:#8b949e;margin-top:1rem">Detailed execution logs for all 15 tasks:</p>', unsafe_allow_html=True)
+        with st.expander("📄 View Full Evaluation Log"):
+            st.code(log_content, language="text")
+            
+        st.download_button(
+            label="📥 Download Evaluation Log",
+            data=log_content,
+            file_name="evaluation_log.txt",
+            mime="text/plain",
+        )
     st.markdown('</div>', unsafe_allow_html=True)
 
 # ══════════════════════════════════════════════════════════════════════════════
